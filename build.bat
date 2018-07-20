@@ -1,1 +1,1 @@
-browserify main.js -o IIF.js
+browserify -t brfs main.js > IIF.js
