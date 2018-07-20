@@ -8,16 +8,22 @@
         <link type="text/css" href="style/reset.css" rel="stylesheet" />
         <link type="text/css" href="style/style.css" rel="stylesheet" />
 
+        <!--example 1-->
         <script type="text/javascript" src="IIF.js"></script>
         <script type="text/javascript" src="Game/main.js"></script>
+
+        <!--example 2, the game is built with IIF, only 1 bundle, no need to include IIF.js-->
+        <script type="text/javascript" src="example2.js"></script>
 
         <link rel="icon" type="image/png" href="style/favicon.png" />
     </head>
     <body>
         <script type='text/javascript'>
             (()=>{
-                let game = new Game();
+                let game = new Game(); // example 1, simply using the IIF script
                 game.log();
+                let game2 = new Game2(); // example 2, though browserify, built with the IIF script
+                game2.log();
             })()
         </script>
     </body>
