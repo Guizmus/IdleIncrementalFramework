@@ -38,6 +38,9 @@ function load (libName,callback) {
         }
         libToLoad = currentLib;
     }
+    if (Object.keys(libs).length == 0)
+        setCurrentLib(libToLoad);
+
     if (typeof(currentLang) === "undefined")
         setLang();
 
@@ -160,4 +163,7 @@ exports.load = load;
 exports.parsePage = parsePage;
 exports.getLib = getLib;
 exports.getText = getText;
-exports.libs = libs;
+exports.config = {
+    class : htmlSelector,
+    dataKey : htmlDataKey,
+}
