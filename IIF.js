@@ -262,11 +262,9 @@ exports.config = {
 }
 
 },{}],4:[function(require,module,exports){
-exports.Game = require('./Game.js');
+exports.Game = require('./game.js');
 exports.html = require('./html.js');
 exports.localization = require('./localization.js');
+window.IIF = exports;
 
-},{"./Game.js":1,"./html.js":2,"./localization.js":3}],5:[function(require,module,exports){
-window.IIF = require("./IIF/main");
-
-},{"./IIF/main":4}]},{},[5]);
+},{"./game.js":1,"./html.js":2,"./localization.js":3}]},{},[4]);

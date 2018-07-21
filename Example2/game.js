@@ -9,4 +9,4 @@ class Game extends _IIF.Game {
         });
     }
 }
-exports.Game = Game;
+exports.class = Game;

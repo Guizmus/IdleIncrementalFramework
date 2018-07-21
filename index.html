@@ -10,21 +10,14 @@
 
         <!--example 1-->
         <script type="text/javascript" src="IIF.js"></script>
-        <script type="text/javascript" src="Game/main.js"></script>
+        <script type="text/javascript" src="Example1/game.js"></script>
+        <script type="text/javascript" src="Example1/main.js"></script>
 
-        <!--example 2, the game is built with IIF, only 1 bundle, no need to include IIF.js-->
+        <!-- example 2, the game is built with IIF, only 1 bundle, no need to include IIF.js -->
         <script type="text/javascript" src="example2.js"></script>
 
         <link rel="icon" type="image/png" href="style/favicon.png" />
     </head>
     <body>
-        <script type='text/javascript'>
-            (()=>{
-                let game = new Example1(); // example 1, simply using the IIF script
-                game.log();
-                let game2 = new Example2(); // example 2, though browserify, built with the IIF script
-                game2.log();
-            })()
-        </script>
     </body>
 </html>
