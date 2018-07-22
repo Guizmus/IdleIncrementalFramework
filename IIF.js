@@ -122,7 +122,7 @@ class BigNumber {
 exports = BigNumber
 
 },{}],2:[function(require,module,exports){
-let debug = false;
+let debug = true;
 let localization = require('./localization');
 let view = require('./view');
 
@@ -131,6 +131,9 @@ let _view = new WeakMap();
 
 class Game {
     constructor(config) {
+
+        if (debug)
+            console.log("Game : new game",config)
 
         this.config = config;
 
@@ -148,9 +151,14 @@ class Game {
         if(typeof(config.anchor) === "undefined")
             config.anchor = false;
         _view.set(this,new config.viewClass({
-            identifier:config.anchor
+            identifier:config.anchor,
+            onInitialized : this.onViewInitialized,
+            gameObj : this,
         }));
-
+    }
+    onViewInitialized () {
+        if (debug)
+            console.log("Game : View initialized",_name.get(this))
     }
     load () {
 
@@ -169,7 +177,7 @@ class Game {
     }
     log() {
         if (debug)
-            console.log("Game class log function",this);
+            console.log("Game : log function",this);
     }
 }
 module.exports = Game;
@@ -433,16 +441,16 @@ let html = require('./html');
 let tplsToLoad = new WeakMap();
 
 class View {
-    constructor (params) {
+    constructor (config) {
         if (debug)
-            console.log("View : creating a new view",params.identifier)
-        this.identifier = params.identifier;
-        if (!(typeof(params.customTpls) === "undefined")) {
-            tplsToLoad.set(this,Object.keys(params.customTpls).length);
+            console.log("View : creating a new view",config.identifier)
+        this.config = config;
+        if (!(typeof(config.customTpls) === "undefined")) {
+            tplsToLoad.set(this,Object.keys(config.customTpls).length);
             let that = this;
             this.initialized = false;
-            Object.keys(params.customTpls).forEach(function(key) {
-                html.defineTpl(key,params.customTpls[key],that.finishTplLoading,that)
+            Object.keys(config.customTpls).forEach(function(key) {
+                html.defineTpl(key,config.customTpls[key],that.finishTplLoading,that)
             })
         } else {
             this.onInitialized();
@@ -458,6 +466,8 @@ class View {
         this.initialized = true;
         if (debug)
             console.log("View : View initialized",this.identifier)
+        if (!(typeof(this.config.onInitialized) === "undefined"))
+            this.config.onInitialized.call(this.config.gameObj);
     }
 }
 module.exports = View;

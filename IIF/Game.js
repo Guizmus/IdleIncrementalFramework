@@ -1,4 +1,4 @@
-let debug = false;
+let debug = true;
 let localization = require('./localization');
 let view = require('./view');
 
@@ -7,6 +7,9 @@ let _view = new WeakMap();
 
 class Game {
     constructor(config) {
+
+        if (debug)
+            console.log("Game : new game",config)
 
         this.config = config;
 
@@ -24,9 +27,14 @@ class Game {
         if(typeof(config.anchor) === "undefined")
             config.anchor = false;
         _view.set(this,new config.viewClass({
-            identifier:config.anchor
+            identifier:config.anchor,
+            onInitialized : this.onViewInitialized,
+            gameObj : this,
         }));
-
+    }
+    onViewInitialized () {
+        if (debug)
+            console.log("Game : View initialized",_name.get(this))
     }
     load () {
 
@@ -45,7 +53,7 @@ class Game {
     }
     log() {
         if (debug)
-            console.log("Game class log function",this);
+            console.log("Game : log function",this);
     }
 }
 module.exports = Game;
