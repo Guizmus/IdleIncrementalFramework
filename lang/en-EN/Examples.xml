@@ -3,4 +3,13 @@
     <meta>
         <title>IIF test page</title>
     </meta>
+    <test_output>
+        <title>Example 1 test output</title>
+        <controls>
+            <title>Controls</title>
+        </controls>
+        <results>
+            <title>Results</title>
+        </results>
+    </test_output>
 </body>

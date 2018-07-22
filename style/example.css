@@ -1,0 +1,34 @@
+.exampleDisplay {
+    display : inline-block;
+    width : 45%;
+    height : 500px;;
+    border : 1px solid black;
+    padding : 5px;
+    margin : 5px;
+}
+.exampleTitle {
+    display : block;
+    width : 100%;
+    border-bottom : 2px solid black;
+    font-weight : bold;
+    text-transform : uppercase;
+    font-size : 16pt;
+    padding-bottom : 8px;
+    margin-bottom : 10px;
+}
+.exampleSubTitle {
+    display : block;
+    width : 100%;
+    border-bottom : 1px solid black;
+    font-size : 14pt;
+    padding-bottom : 4px;
+    margin-bottom : 5px;
+}
+.exampleControls {
+    height : 200px;
+    border-bottom : 1px dashed black;
+    margin-bottom : 5px;
+}
+.exampleResults {
+    width : 100%;
+}
