@@ -1,8 +1,6 @@
 features :
     save/load
     save updating : version and offline time
-    --number formating
-    --templates
     classic UI elements
     targeted refresh
     progress bars

@@ -1,6 +1,7 @@
-let html = require('./html');
 let debug = false;
+let html = require('./html');
 let tplsToLoad = new WeakMap();
+
 class View {
     constructor (params) {
         if (debug)

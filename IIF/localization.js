@@ -60,7 +60,7 @@ function load (libName,callback) {
                 fireListeners(libPath);
             })
             .catch(function(error) {
-                console.log("Localization : Error while loading the XML: ",error.message,libPath);
+                console.warn("Localization : Error while loading the XML: ",error.message,libPath);
             });
     } else { // library is already loaded
         if (!(typeof(callback) === "undefined")) {

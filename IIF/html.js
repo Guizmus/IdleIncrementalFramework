@@ -1,6 +1,6 @@
+let debug = false;
 let fs = require('fs');
 let localization = require('./localization');
-let debug = false;
 
 class Tpl {
     constructor (tplStr) {
@@ -40,7 +40,8 @@ function loadTpl (path,callback) {
             callback.call(this,data)
         })
         .catch(function(error) {
-            console.log("html : Error while loading a tpl : ",error.message,path);
+            console.warn("html : Error while loading a tpl : ",error.message,path);
+            callback.call(this,false)
         });
 }
 function defineTpl (tplKey,tplPath,callback,ctx) {
@@ -65,9 +66,6 @@ function localizedText (path,lib) {
     	path : path,
         text : localization.getText(path,lib)
     });
-}
-exports.test = function() {
-    return getTpl('localizedText');
 }
 exports.getTpl = getTpl;
 exports.defineTpl = defineTpl;

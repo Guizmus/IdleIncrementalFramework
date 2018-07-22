@@ -1,3 +1,4 @@
+let debug = false;
 let localization = require('./localization');
 let view = require('./view');
 
@@ -43,7 +44,8 @@ class Game {
         _view.get(this).update(target);
     }
     log() {
-        console.log("Game class log function",this,_name.get(this));
+        if (debug)
+            console.log("Game class log function",this);
     }
 }
 module.exports = Game;

@@ -1,3 +1,5 @@
+let debug = false;
+
 let innerPrecision = Number.MAX_SAFE_INTEGER.toExponential().split("e+")[1] -1; // usually 14
 
 let _value = new WeakMap();
@@ -115,7 +117,5 @@ class BigNumber {
         return displayValue+suffix;
     }
 }
-// let test  = new BigNumber(184243.12474561108754,3);
-// console.log(test.toEngineering())
-// console.log(test.toScientific())
+
 exports = BigNumber

@@ -1,4 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+let debug = false;
+
 let innerPrecision = Number.MAX_SAFE_INTEGER.toExponential().split("e+")[1] -1; // usually 14
 
 let _value = new WeakMap();
@@ -116,12 +118,11 @@ class BigNumber {
         return displayValue+suffix;
     }
 }
-// let test  = new BigNumber(184243.12474561108754,3);
-// console.log(test.toEngineering())
-// console.log(test.toScientific())
+
 exports = BigNumber
 
 },{}],2:[function(require,module,exports){
+let debug = false;
 let localization = require('./localization');
 let view = require('./view');
 
@@ -167,15 +168,16 @@ class Game {
         _view.get(this).update(target);
     }
     log() {
-        console.log("Game class log function",this,_name.get(this));
+        if (debug)
+            console.log("Game class log function",this);
     }
 }
 module.exports = Game;
 
 },{"./localization":4,"./view":6}],3:[function(require,module,exports){
+let debug = false;
 
 let localization = require('./localization');
-let debug = false;
 
 class Tpl {
     constructor (tplStr) {
@@ -215,7 +217,8 @@ function loadTpl (path,callback) {
             callback.call(this,data)
         })
         .catch(function(error) {
-            console.log("html : Error while loading a tpl : ",error.message,path);
+            console.warn("html : Error while loading a tpl : ",error.message,path);
+            callback.call(this,false)
         });
 }
 function defineTpl (tplKey,tplPath,callback,ctx) {
@@ -240,9 +243,6 @@ function localizedText (path,lib) {
     	path : path,
         text : localization.getText(path,lib)
     });
-}
-exports.test = function() {
-    return getTpl('localizedText');
 }
 exports.getTpl = getTpl;
 exports.defineTpl = defineTpl;
@@ -311,7 +311,7 @@ function load (libName,callback) {
                 fireListeners(libPath);
             })
             .catch(function(error) {
-                console.log("Localization : Error while loading the XML: ",error.message,libPath);
+                console.warn("Localization : Error while loading the XML: ",error.message,libPath);
             });
     } else { // library is already loaded
         if (!(typeof(callback) === "undefined")) {
@@ -428,9 +428,10 @@ exports.localization = require('./localization.js');
 window.IIF = exports;
 
 },{"./bignumber.js":1,"./game.js":2,"./html.js":3,"./localization.js":4,"./view.js":6}],6:[function(require,module,exports){
-let html = require('./html');
 let debug = false;
+let html = require('./html');
 let tplsToLoad = new WeakMap();
+
 class View {
     constructor (params) {
         if (debug)
