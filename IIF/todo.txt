@@ -5,3 +5,6 @@ features :
     --templates
     classic UI elements
     targeted refresh
+    progress bars
+    Exponential value display with refresh
+    Leveled value

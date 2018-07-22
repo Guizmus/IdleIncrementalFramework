@@ -18,3 +18,17 @@ Aiming for multilingual or just wanting to centralize texts in an XML file, the 
 Example 1 uses localization. The title tag is completed from the XML because of that. Using IIF.html.localizedText function, you can use strings from your XMLs in your views.
 
 Example 2 doens't use localization, and will directly put strings in the page.
+
+### BigNumber Data Structure
+Using exponentially growing numbers is a common thing in Incrementals. The IIF.BigNumber class stores a big number, using maximum Number precision available, and managing the exponent on its own.
+It gives multiple formating output :
+* Scientific through toScientific
+* Engineering though toEngineering
+* Short suffix thought toShortSuffix
+* Long suffix throught toLongSuffix
+It can also return its internal values for custom formating.
+it exposes the methods :
+* setValue : the value to be used initialy
+* add : to add a given number to the current value
+* setPrecision : the displayed precision
+* getValue : the Float value, calculated on call
