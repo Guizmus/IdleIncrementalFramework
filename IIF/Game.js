@@ -1,6 +1,8 @@
 let localization = require('./localization');
+let view = require('./view');
 
 let _name = new WeakMap();
+let _view = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -16,6 +18,14 @@ class Game {
             localization.load(config.libName,function(){localization.parsePage(config.libName)});
         }
 
+        if(typeof(config.viewClass) === "undefined")
+            config.viewClass = view.viewClass;
+        if(typeof(config.anchor) === "undefined")
+            config.anchor = false;
+        _view.set(this,new config.viewClass({
+            identifier:config.anchor
+        }));
+
     }
     load () {
 
@@ -23,11 +33,14 @@ class Game {
     save () {
 
     }
-    draw () {
-
+    getView () {
+        return _view.get(this);
     }
-    update () {
-
+    draw () {
+        _view.get(this).draw();
+    }
+    update (target) {
+        _view.get(this).update(target);
     }
     log() {
         console.log("Game class log function",this,_name.get(this));

@@ -1,4 +1,4 @@
 console.log("Example 2 : baked with the lib");
-let Example2 = require("./game");
-let game = new Example2.class;
-game.log();
+let Game = require("./game");
+let game = new Game();
+// game.log();

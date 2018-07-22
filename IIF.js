@@ -123,8 +123,10 @@ exports = BigNumber
 
 },{}],2:[function(require,module,exports){
 let localization = require('./localization');
+let view = require('./view');
 
 let _name = new WeakMap();
+let _view = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -140,6 +142,14 @@ class Game {
             localization.load(config.libName,function(){localization.parsePage(config.libName)});
         }
 
+        if(typeof(config.viewClass) === "undefined")
+            config.viewClass = view.viewClass;
+        if(typeof(config.anchor) === "undefined")
+            config.anchor = false;
+        _view.set(this,new config.viewClass({
+            identifier:config.anchor
+        }));
+
     }
     load () {
 
@@ -147,11 +157,14 @@ class Game {
     save () {
 
     }
-    draw () {
-
+    getView () {
+        return _view.get(this);
     }
-    update () {
-
+    draw () {
+        _view.get(this).draw();
+    }
+    update (target) {
+        _view.get(this).update(target);
     }
     log() {
         console.log("Game class log function",this,_name.get(this));
@@ -159,9 +172,10 @@ class Game {
 }
 module.exports = Game;
 
-},{"./localization":4}],3:[function(require,module,exports){
+},{"./localization":4,"./view":6}],3:[function(require,module,exports){
 
 let localization = require('./localization');
+let debug = false;
 
 class Tpl {
     constructor (tplStr) {
@@ -192,6 +206,26 @@ let tpls = {
                 .replace('{{locClass}}',localization.config.class)
                 .replace('{{locDataKey}}',localization.config.dataKey),
 }
+function loadTpl (path,callback) {
+    fetch(path)
+        .then(response => response.text())
+        .then(data => {
+            if (debug)
+                console.log("html : Loaded tpl",path,data);
+            callback.call(this,data)
+        })
+        .catch(function(error) {
+            console.log("html : Error while loading a tpl : ",error.message,path);
+        });
+}
+function defineTpl (tplKey,tplPath,callback,ctx) {
+    if (typeof(callback) === "undefined")
+        callback = (()=>{});
+    loadTpl(tplPath,function(tplStr) {
+        tpls[tplKey] = tplStr;
+        callback.call(ctx);
+    })
+}
 function getTpl (tpl,datas) {
     if (typeof(datas) === "undefined")
         return new Tpl(tpls[tpl]);
@@ -211,10 +245,11 @@ exports.test = function() {
     return getTpl('localizedText');
 }
 exports.getTpl = getTpl;
+exports.defineTpl = defineTpl;
 exports.localizedText = localizedText;
 
 },{"./localization":4}],4:[function(require,module,exports){
-let debug = true;
+let debug = false;
 let defaultLang = 'en-EN';
 let supportedLang = 'en-EN';
 
@@ -387,8 +422,43 @@ exports.config = {
 },{}],5:[function(require,module,exports){
 exports.Game = require('./game.js');
 exports.BigNumber =require('./bignumber.js');
+exports.View = require('./view.js');
 exports.html = require('./html.js');
 exports.localization = require('./localization.js');
 window.IIF = exports;
 
-},{"./bignumber.js":1,"./game.js":2,"./html.js":3,"./localization.js":4}]},{},[5]);
+},{"./bignumber.js":1,"./game.js":2,"./html.js":3,"./localization.js":4,"./view.js":6}],6:[function(require,module,exports){
+let html = require('./html');
+let debug = false;
+let tplsToLoad = new WeakMap();
+class View {
+    constructor (params) {
+        if (debug)
+            console.log("View : creating a new view",params.identifier)
+        this.identifier = params.identifier;
+        if (!(typeof(params.customTpls) === "undefined")) {
+            tplsToLoad.set(this,Object.keys(params.customTpls).length);
+            let that = this;
+            this.initialized = false;
+            Object.keys(params.customTpls).forEach(function(key) {
+                html.defineTpl(key,params.customTpls[key],that.finishTplLoading,that)
+            })
+        } else {
+            this.onInitialized();
+        }
+    }
+    finishTplLoading() {
+        tplsToLoad.set(this,tplsToLoad.get(this)-1);
+        if (tplsToLoad.get(this)<=0) {
+            this.onInitialized();
+        }
+    }
+    onInitialized () {
+        this.initialized = true;
+        if (debug)
+            console.log("View : View initialized",this.identifier)
+    }
+}
+module.exports = View;
+
+},{"./html":3}]},{},[5]);

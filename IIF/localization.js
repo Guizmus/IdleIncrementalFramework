@@ -1,4 +1,4 @@
-let debug = true;
+let debug = false;
 let defaultLang = 'en-EN';
 let supportedLang = 'en-EN';
 

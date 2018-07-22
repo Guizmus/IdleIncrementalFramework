@@ -1,5 +1,6 @@
 let fs = require('fs');
 let localization = require('./localization');
+let debug = false;
 
 class Tpl {
     constructor (tplStr) {
@@ -30,6 +31,26 @@ let tpls = {
                 .replace('{{locClass}}',localization.config.class)
                 .replace('{{locDataKey}}',localization.config.dataKey),
 }
+function loadTpl (path,callback) {
+    fetch(path)
+        .then(response => response.text())
+        .then(data => {
+            if (debug)
+                console.log("html : Loaded tpl",path,data);
+            callback.call(this,data)
+        })
+        .catch(function(error) {
+            console.log("html : Error while loading a tpl : ",error.message,path);
+        });
+}
+function defineTpl (tplKey,tplPath,callback,ctx) {
+    if (typeof(callback) === "undefined")
+        callback = (()=>{});
+    loadTpl(tplPath,function(tplStr) {
+        tpls[tplKey] = tplStr;
+        callback.call(ctx);
+    })
+}
 function getTpl (tpl,datas) {
     if (typeof(datas) === "undefined")
         return new Tpl(tpls[tpl]);
@@ -49,4 +70,5 @@ exports.test = function() {
     return getTpl('localizedText');
 }
 exports.getTpl = getTpl;
+exports.defineTpl = defineTpl;
 exports.localizedText = localizedText;
