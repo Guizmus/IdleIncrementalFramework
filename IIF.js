@@ -50,7 +50,70 @@ class BigNumber {
         displayValue *= Math.pow(10,removedExponent);
         displayValue = displayValue.toFixed(value.precision);
         return displayValue+"e"+(displayExponent > 0 ? '+' : '')+displayExponent;
-
+    }
+    toShortSuffix () {
+        let value = _value.get(this);
+        let preciseSplit = value.preciseValue.toExponential().split('e');
+        let displayExponent = preciseSplit[1]*1+value.exponent;
+        let displayValue = (preciseSplit[0]*1);
+        let removedExponent = displayExponent%3;
+        displayExponent -= removedExponent;
+        displayValue *= Math.pow(10,removedExponent);
+        displayValue = displayValue.toFixed(value.precision);
+        let suffix = "e"+(displayExponent > 0 ? '+' : '')+displayExponent
+        switch (displayExponent/3) {
+            case -8 : suffix = 'y';break;
+            case -7 : suffix = 'z';break;
+            case -6 : suffix = 'a';break;
+            case -5 : suffix = 'f';break;
+            case -4 : suffix = 'p';break;
+            case -3 : suffix = 'n';break;
+            case -2 : suffix = 'µ';break;
+            case -1 : suffix = 'm';break;
+            case 0 : suffix = '';break;
+            case 1 : suffix = 'k';break;
+            case 2 : suffix = 'M';break;
+            case 3 : suffix = 'G';break;
+            case 4 : suffix = 'T';break;
+            case 5 : suffix = 'P';break;
+            case 6 : suffix = 'E';break;
+            case 7 : suffix = 'Z';break;
+            case 8 : suffix = 'Y';break;
+            default:break;
+        }
+        return displayValue+suffix;
+    }
+    toLongSuffix () {
+        let value = _value.get(this);
+        let preciseSplit = value.preciseValue.toExponential().split('e');
+        let displayExponent = preciseSplit[1]*1+value.exponent;
+        let displayValue = (preciseSplit[0]*1);
+        let removedExponent = displayExponent%3;
+        displayExponent -= removedExponent;
+        displayValue *= Math.pow(10,removedExponent);
+        displayValue = displayValue.toFixed(value.precision);
+        let suffix = "e"+(displayExponent > 0 ? '+' : '')+displayExponent
+        switch (displayExponent/3) {
+            case -8 : suffix = 'yocto';break;
+            case -7 : suffix = 'zepto';break;
+            case -6 : suffix = 'atto';break;
+            case -5 : suffix = 'femto';break;
+            case -4 : suffix = 'pico';break;
+            case -3 : suffix = 'nano';break;
+            case -2 : suffix = 'micro';break;
+            case -1 : suffix = 'milli';break;
+            case 0 : suffix = '';break;
+            case 1 : suffix = 'kilo';break;
+            case 2 : suffix = 'mega';break;
+            case 3 : suffix = 'giga';break;
+            case 4 : suffix = 'tera';break;
+            case 5 : suffix = 'peta';break;
+            case 6 : suffix = 'exa';break;
+            case 7 : suffix = 'zetta';break;
+            case 8 : suffix = 'yotta';break;
+            default:break;
+        }
+        return displayValue+suffix;
     }
 }
 // let test  = new BigNumber(184243.12474561108754,3);
