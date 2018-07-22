@@ -1,4 +1,64 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+let innerPrecision = Number.MAX_SAFE_INTEGER.toExponential().split("e+")[1] -1; // usually 14
+
+let _value = new WeakMap();
+
+class BigNumber {
+    constructor (initialValue,displayPrecision) {
+        let preciseValue = initialValue.toExponential().split('e');
+        _value.set(this,{
+            preciseValue : Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1)),
+            exponent : (preciseValue[1])*1 -innerPrecision+1,
+            precision : displayPrecision,
+        })
+    }
+    setValue (initialValue) {
+        let preciseValue = initialValue.toExponential().split('e');
+        let value = _value.get(this);
+        value.preciseValue = Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1));
+        value.exponent = (preciseValue[1])*1 -innerPrecision+1,
+        _value.set(this,value);
+    }
+    setPrecision (precision) {
+        let value = _value.get(this);
+        value.precision = precision;
+        _value.set(this,value);
+    }
+    getValue () {
+        let value = _value.get(this);
+        return value.preciseValue*Math.pow(10,value.exponent);
+    }
+    add (toAdd) {
+        let value = this.getValue();
+        value += toAdd;
+        this.setValue(value);
+    }
+    toScientific () {
+        let value = _value.get(this);
+        let preciseSplit = value.preciseValue.toExponential().split('e')
+        let displayExponent = preciseSplit[1]*1+value.exponent;
+        let displayValue = (preciseSplit[0]*1).toFixed(value.precision);
+        return displayValue+"e"+(displayExponent > 0 ? '+' : '')+displayExponent;
+    }
+    toEngineering () {
+        let value = _value.get(this);
+        let preciseSplit = value.preciseValue.toExponential().split('e');
+        let displayExponent = preciseSplit[1]*1+value.exponent;
+        let displayValue = (preciseSplit[0]*1);
+        let removedExponent = displayExponent%3;
+        displayExponent -= removedExponent;
+        displayValue *= Math.pow(10,removedExponent);
+        displayValue = displayValue.toFixed(value.precision);
+        return displayValue+"e"+(displayExponent > 0 ? '+' : '')+displayExponent;
+
+    }
+}
+// let test  = new BigNumber(184243.12474561108754,3);
+// console.log(test.toEngineering())
+// console.log(test.toScientific())
+exports = BigNumber
+
+},{}],2:[function(require,module,exports){
 let localization = require('./localization');
 
 let _name = new WeakMap();
@@ -36,7 +96,7 @@ class Game {
 }
 module.exports = Game;
 
-},{"./localization":3}],2:[function(require,module,exports){
+},{"./localization":4}],3:[function(require,module,exports){
 
 let localization = require('./localization');
 
@@ -90,7 +150,7 @@ exports.test = function() {
 exports.getTpl = getTpl;
 exports.localizedText = localizedText;
 
-},{"./localization":3}],3:[function(require,module,exports){
+},{"./localization":4}],4:[function(require,module,exports){
 let debug = true;
 let defaultLang = 'en-EN';
 let supportedLang = 'en-EN';
@@ -261,10 +321,11 @@ exports.config = {
     dataKey : htmlDataKey,
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 exports.Game = require('./game.js');
+exports.BigNumber =require('./bignumber.js');
 exports.html = require('./html.js');
 exports.localization = require('./localization.js');
 window.IIF = exports;
 
-},{"./game.js":1,"./html.js":2,"./localization.js":3}]},{},[4]);
+},{"./bignumber.js":1,"./game.js":2,"./html.js":3,"./localization.js":4}]},{},[5]);
