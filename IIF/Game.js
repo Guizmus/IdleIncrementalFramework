@@ -35,6 +35,8 @@ class Game {
     onViewInitialized () {
         if (debug)
             console.log("Game : View initialized",_name.get(this))
+        if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
+            localization.parsePage(this.config.libName);
     }
     load () {
 

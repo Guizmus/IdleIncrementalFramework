@@ -7,6 +7,8 @@
         <title>Example 1 test output</title>
         <controls>
             <title>Controls</title>
+            <addGold>Add gold</addGold>
+            <multGold>Multiply gold</multGold>
         </controls>
         <results>
             <title>Results</title>
