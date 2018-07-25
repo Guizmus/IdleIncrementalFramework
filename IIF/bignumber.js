@@ -7,6 +7,7 @@ let _value = new WeakMap();
 class BigNumber {
     constructor (initialValue,displayPrecision) {
         let preciseValue = initialValue.toExponential().split('e');
+        this.display_mode = 'toShortSuffix';
         _value.set(this,{
             preciseValue : Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1)),
             exponent : (preciseValue[1])*1 -innerPrecision+1,
@@ -33,6 +34,9 @@ class BigNumber {
         let value = this.getValue();
         value += toAdd;
         this.setValue(value);
+    }
+    toStr () {
+        return this[this.display_mode]();
     }
     toScientific () {
         let value = _value.get(this);

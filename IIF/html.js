@@ -1,4 +1,4 @@
-let debug = false;
+let debug = true;
 let fs = require('fs');
 let localization = require('./localization');
 
@@ -31,17 +31,22 @@ let tpls = {
                 .replace('{{locClass}}',localization.config.class)
                 .replace('{{locDataKey}}',localization.config.dataKey),
 }
+
 function loadTpl (path,callback) {
+    let data = false;
+
     fetch(path)
         .then(response => response.text())
-        .then(data => {
+        .then(_data => {
             if (debug)
-                console.log("html : Loaded tpl",path,data);
-            callback.call(this,data)
+                console.log("html : Loaded tpl",path,_data);
+            data = _data;
         })
         .catch(function(error) {
             console.warn("html : Error while loading a tpl : ",error.message,path);
-            callback.call(this,false)
+        })
+        .then(()=>{
+            callback.call(this,data)
         });
 }
 function defineTpl (tplKey,tplPath,callback,ctx) {
@@ -53,8 +58,16 @@ function defineTpl (tplKey,tplPath,callback,ctx) {
     })
 }
 function getTpl (tpl,datas) {
+    if(typeof(tpls[tpl]) === "undefined") {
+        if(debug)
+            console.warn("html : Trying to use a tpl that isn't declared, or loaded yet :",tpl)
+        return false;
+    }
+    if (tpls[tpl] === false)
+        return false;
     if (typeof(datas) === "undefined")
         return new Tpl(tpls[tpl]);
+
     tpl = new Tpl(tpls[tpl]);
     Object.keys(datas).forEach(function(key) {
         tpl.set(key,datas[key])

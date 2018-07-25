@@ -1,11 +1,11 @@
-let debug = false;
+let debug = true;
 let html = require('./html');
 let tplsToLoad = new WeakMap();
 
 class View {
     constructor (config) {
         if (debug)
-            console.log("View : creating a new view",config.identifier)
+            console.log("View : creating a new view",config)
         this.config = config;
         this.components = {};
         if (!(typeof(config.customTpls) === "undefined")) {
@@ -26,9 +26,16 @@ class View {
         }
     }
     onInitialized () {
+        let that = this;
+        if (!document.body) {
+          window.addEventListener("load", function(event) {
+            that.onInitialized();
+          });
+          return false;
+        }
         this.initialized = true;
         if (debug)
-            console.log("View : View initialized",this.identifier)
+            console.log("View : View initialized",this.config)
 
         // tpls are loaded, we build the components
         if (!(typeof(this.config.components) === "undefined")) {
@@ -47,8 +54,26 @@ class View {
     }
     buildComponent (componentID) {
         let config = this.components[componentID];
+        let element = document.getElementById(config.anchor);
+        if (element === null) {
+            if(debug)
+                console.log("View ; trying to build an element but the anchor can't be found",componentID,config,document.getElementById(config.anchor))
+            return false;
+        }
         let innerHTML = html.getTpl(config.tpl,config.tplBindings);
-        document.getElementById(config.anchor).innerHTML = innerHTML;
+        if (innerHTML)
+            document.getElementById(config.anchor).innerHTML = innerHTML;
+    }
+    redrawComponent (componentID,content) {
+        if (this.components[componentID].tpl === 'updatedValue') {
+            document.getElementById(this.components[componentID].tplBindings.id).innerHTML = content;
+        } else this.buildComponent(componentID);
+    }
+    redraw () {
+        let that = this;
+        Object.keys(this.config.components).forEach(function(key) {
+            that.redrawComponent(key);
+        })
     }
 }
 module.exports = View;

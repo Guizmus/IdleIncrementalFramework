@@ -1,9 +1,10 @@
 let debug = true;
 let localization = require('./localization');
 let view = require('./view');
+let GameValue = require('./gamevalue.js');
 
-let _name = new WeakMap();
 let _view = new WeakMap();
+let _values = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -12,8 +13,7 @@ class Game {
             console.log("Game : new game",config)
 
         this.config = config;
-
-        _name.set(this,config.name);
+        let that = this;
 
         if (!(typeof(config.libName) === "undefined")) {
             if ((typeof(config.langs) != "undefined") && (config.langs.length > 0)) {
@@ -24,19 +24,47 @@ class Game {
 
         if(typeof(config.viewClass) === "undefined")
             config.viewClass = view.viewClass;
-        if(typeof(config.anchor) === "undefined")
-            config.anchor = false;
-        _view.set(this,new config.viewClass({
-            identifier:config.anchor,
+        let view = new config.viewClass({
             onInitialized : this.onViewInitialized,
             gameObj : this,
-        }));
+        })
+        _view.set(this,view);
+
+        _values.set(this,{});
+        if (!(typeof(config.gameValues) === "undefined")) {
+            Object.keys(config.gameValues).forEach(function(key) {
+                that.registerValue(key,config.gameValues[key])
+            })
+            this.redrawValues();
+        }
+
+    }
+    redrawValues() {
+        if (this.getView().initialized === false) {
+            return true;
+        }
+        let values = _values.get(this);
+        let that = this;
+        Object.keys(values).forEach(function(key) {
+            _view.get(that).redrawComponent(values[key].component,values[key].toStr());
+        });
     }
     onViewInitialized () {
         if (debug)
-            console.log("Game : View initialized",_name.get(this))
+            console.log("Game : View initialized",this)
         if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
             localization.parsePage(this.config.libName);
+        this.redrawValues();
+    }
+    registerValue (key,config) {
+        let values = _values.get(this);
+        if (!(typeof(values[key]) === "undefined")) {
+            console.warn('Game : trying to create a registered value with an already taken identifier :',key)
+            return false;
+        }
+        config.id = key;
+        values[key] = new GameValue(config);
+        _values.set(this,values);
     }
     load () {
 

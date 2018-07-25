@@ -6,7 +6,7 @@ class View extends _IIF.View {
     constructor (params) {
         // in this example, we will use a custom TPL
         params.customTpls = {
-            example1control : 'Example/tpl/control.tpl',
+            control : 'Example/tpl/control.tpl',
         }
         // we then will use that component for 2 controls
         params.components = {

@@ -8,6 +8,7 @@ let _value = new WeakMap();
 class BigNumber {
     constructor (initialValue,displayPrecision) {
         let preciseValue = initialValue.toExponential().split('e');
+        this.display_mode = 'toShortSuffix';
         _value.set(this,{
             preciseValue : Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1)),
             exponent : (preciseValue[1])*1 -innerPrecision+1,
@@ -34,6 +35,9 @@ class BigNumber {
         let value = this.getValue();
         value += toAdd;
         this.setValue(value);
+    }
+    toStr () {
+        return this[this.display_mode]();
     }
     toScientific () {
         let value = _value.get(this);
@@ -125,9 +129,10 @@ module.exports = BigNumber;
 let debug = true;
 let localization = require('./localization');
 let view = require('./view');
+let GameValue = require('./gamevalue.js');
 
-let _name = new WeakMap();
 let _view = new WeakMap();
+let _values = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -136,8 +141,7 @@ class Game {
             console.log("Game : new game",config)
 
         this.config = config;
-
-        _name.set(this,config.name);
+        let that = this;
 
         if (!(typeof(config.libName) === "undefined")) {
             if ((typeof(config.langs) != "undefined") && (config.langs.length > 0)) {
@@ -148,19 +152,47 @@ class Game {
 
         if(typeof(config.viewClass) === "undefined")
             config.viewClass = view.viewClass;
-        if(typeof(config.anchor) === "undefined")
-            config.anchor = false;
-        _view.set(this,new config.viewClass({
-            identifier:config.anchor,
+        let view = new config.viewClass({
             onInitialized : this.onViewInitialized,
             gameObj : this,
-        }));
+        })
+        _view.set(this,view);
+
+        _values.set(this,{});
+        if (!(typeof(config.gameValues) === "undefined")) {
+            Object.keys(config.gameValues).forEach(function(key) {
+                that.registerValue(key,config.gameValues[key])
+            })
+            this.redrawValues();
+        }
+
+    }
+    redrawValues() {
+        if (this.getView().initialized === false) {
+            return true;
+        }
+        let values = _values.get(this);
+        let that = this;
+        Object.keys(values).forEach(function(key) {
+            _view.get(that).redrawComponent(values[key].component,values[key].toStr());
+        });
     }
     onViewInitialized () {
         if (debug)
-            console.log("Game : View initialized",_name.get(this))
+            console.log("Game : View initialized",this)
         if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
             localization.parsePage(this.config.libName);
+        this.redrawValues();
+    }
+    registerValue (key,config) {
+        let values = _values.get(this);
+        if (!(typeof(values[key]) === "undefined")) {
+            console.warn('Game : trying to create a registered value with an already taken identifier :',key)
+            return false;
+        }
+        config.id = key;
+        values[key] = new GameValue(config);
+        _values.set(this,values);
     }
     load () {
 
@@ -184,8 +216,23 @@ class Game {
 }
 module.exports = Game;
 
-},{"./localization":4,"./view":6}],3:[function(require,module,exports){
-let debug = false;
+},{"./gamevalue.js":3,"./localization":5,"./view":8}],3:[function(require,module,exports){
+let debug = true;
+let SavedValue = require('./savedValue');
+
+class GameValue extends SavedValue {
+    constructor (config) {
+        if (debug)
+            console.log("GameValue : creating a new value",config)
+        super(config.data);
+        this.id = config.id;
+        this.component = config.component;
+    }
+}
+module.exports = GameValue;
+
+},{"./savedValue":7}],4:[function(require,module,exports){
+let debug = true;
 
 let localization = require('./localization');
 
@@ -218,17 +265,22 @@ let tpls = {
                 .replace('{{locClass}}',localization.config.class)
                 .replace('{{locDataKey}}',localization.config.dataKey),
 }
+
 function loadTpl (path,callback) {
+    let data = false;
+
     fetch(path)
         .then(response => response.text())
-        .then(data => {
+        .then(_data => {
             if (debug)
-                console.log("html : Loaded tpl",path,data);
-            callback.call(this,data)
+                console.log("html : Loaded tpl",path,_data);
+            data = _data;
         })
         .catch(function(error) {
             console.warn("html : Error while loading a tpl : ",error.message,path);
-            callback.call(this,false)
+        })
+        .then(()=>{
+            callback.call(this,data)
         });
 }
 function defineTpl (tplKey,tplPath,callback,ctx) {
@@ -240,8 +292,16 @@ function defineTpl (tplKey,tplPath,callback,ctx) {
     })
 }
 function getTpl (tpl,datas) {
+    if(typeof(tpls[tpl]) === "undefined") {
+        if(debug)
+            console.warn("html : Trying to use a tpl that isn't declared, or loaded yet :",tpl)
+        return false;
+    }
+    if (tpls[tpl] === false)
+        return false;
     if (typeof(datas) === "undefined")
         return new Tpl(tpls[tpl]);
+
     tpl = new Tpl(tpls[tpl]);
     Object.keys(datas).forEach(function(key) {
         tpl.set(key,datas[key])
@@ -258,7 +318,7 @@ exports.getTpl = getTpl;
 exports.defineTpl = defineTpl;
 exports.localizedText = localizedText;
 
-},{"./localization":4}],4:[function(require,module,exports){
+},{"./localization":5}],5:[function(require,module,exports){
 let debug = false;
 let defaultLang = 'en-EN';
 let supportedLang = 'en-EN';
@@ -429,7 +489,7 @@ exports.config = {
     dataKey : htmlDataKey,
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 exports.Game = require('./game.js');
 exports.BigNumber = require('./bignumber.js');
 exports.View = require('./view.js');
@@ -437,15 +497,41 @@ exports.html = require('./html.js');
 exports.localization = require('./localization.js');
 window.IIF = exports;
 
-},{"./bignumber.js":1,"./game.js":2,"./html.js":3,"./localization.js":4,"./view.js":6}],6:[function(require,module,exports){
+},{"./bignumber.js":1,"./game.js":2,"./html.js":4,"./localization.js":5,"./view.js":8}],7:[function(require,module,exports){
 let debug = false;
+
+let datas = new WeakMap();
+
+class SavedValue {
+    constructor (data) {
+        if (debug)
+            console.log("SavedValue : creating a new value",config);
+        datas.set(this,data);
+    }
+    getValueObject() {
+        return datas.get(this);
+    }
+    toStr() {
+        return this.getValueObject().toStr();
+    }
+    toJSON () {
+
+    }
+    fromJSON(json) {
+
+    }
+}
+module.exports = SavedValue;
+
+},{}],8:[function(require,module,exports){
+let debug = true;
 let html = require('./html');
 let tplsToLoad = new WeakMap();
 
 class View {
     constructor (config) {
         if (debug)
-            console.log("View : creating a new view",config.identifier)
+            console.log("View : creating a new view",config)
         this.config = config;
         this.components = {};
         if (!(typeof(config.customTpls) === "undefined")) {
@@ -466,9 +552,16 @@ class View {
         }
     }
     onInitialized () {
+        let that = this;
+        if (!document.body) {
+          window.addEventListener("load", function(event) {
+            that.onInitialized();
+          });
+          return false;
+        }
         this.initialized = true;
         if (debug)
-            console.log("View : View initialized",this.identifier)
+            console.log("View : View initialized",this.config)
 
         // tpls are loaded, we build the components
         if (!(typeof(this.config.components) === "undefined")) {
@@ -487,10 +580,28 @@ class View {
     }
     buildComponent (componentID) {
         let config = this.components[componentID];
+        let element = document.getElementById(config.anchor);
+        if (element === null) {
+            if(debug)
+                console.log("View ; trying to build an element but the anchor can't be found",componentID,config,document.getElementById(config.anchor))
+            return false;
+        }
         let innerHTML = html.getTpl(config.tpl,config.tplBindings);
-        document.getElementById(config.anchor).innerHTML = innerHTML;
+        if (innerHTML)
+            document.getElementById(config.anchor).innerHTML = innerHTML;
+    }
+    redrawComponent (componentID,content) {
+        if (this.components[componentID].tpl === 'updatedValue') {
+            document.getElementById(this.components[componentID].tplBindings.id).innerHTML = content;
+        } else this.buildComponent(componentID);
+    }
+    redraw () {
+        let that = this;
+        Object.keys(this.config.components).forEach(function(key) {
+            that.redrawComponent(key);
+        })
     }
 }
 module.exports = View;
 
-},{"./html":3}]},{},[5]);
+},{"./html":4}]},{},[6]);
