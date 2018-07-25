@@ -9,36 +9,22 @@
         <link type="text/css" href="style/IIF.css" rel="stylesheet" />
         <link type="text/css" href="style/example.css" rel="stylesheet" />
 
-        <!--example 1-->
-        <script type="text/javascript" src="IIF.js"></script>
-        <script type="text/javascript" src="Example1/game.js"></script>
-        <script type="text/javascript" src="Example1/view.js"></script>
-        <script type="text/javascript" src="Example1/main.js"></script>
-
-        <!-- example 2, the game is built with IIF, only 1 bundle, no need to include IIF.js -->
-        <script type="text/javascript" src="example2.js"></script>
+        <!-- example, the game is built with IIF, only 1 bundle, no need to include IIF.js -->
+        <script type="text/javascript" src="example.js"></script>
 
         <link rel="icon" type="image/png" href="style/favicon.png" />
     </head>
     <body>
-        <div id='example1' class='exampleDisplay'>
+        <div id='example' class='exampleDisplay'>
             <h1 class='exampleTitle loc' data-lk="test_output>title"></h1> <!-- first way to use the localization. change the keys in localization.js configuration if you want. -->
             <div class='exampleControls'>
                 <h2 class='exampleSubTitle loc' data-lk="test_output>controls>title"></h2>
-                <div id='example1addGold'></div>
-                <div id='example1multGold'></div>
+                <div id='addGold'></div>
+                <div id='multGold'></div>
             </div>
             <div class='exampleResults'>
                 <h2 class='exampleSubTitle loc' data-lk="test_output>results>title"></h2>
-            </div>
-        </div>
-        <div id='example2' class='exampleDisplay'>
-            <h1 class='exampleTitle'>Example 2 test output</h1>
-            <div class='exampleControls'>
-                <h2 class='exampleSubTitle'>Controls</h2>
-            </div>
-            <div class='exampleResults'>
-                <h2 class='exampleSubTitle'>Results</h2>
+                <div id='goldDisplay'></div>
             </div>
         </div>
     </body>

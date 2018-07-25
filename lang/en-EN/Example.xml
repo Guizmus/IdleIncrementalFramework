@@ -4,7 +4,7 @@
         <title>IIF test page</title>
     </meta>
     <test_output>
-        <title>Example 1 test output</title>
+        <title>Example test output</title>
         <controls>
             <title>Controls</title>
             <addGold>Add gold</addGold>

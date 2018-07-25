@@ -119,7 +119,7 @@ class BigNumber {
     }
 }
 
-exports = BigNumber
+module.exports = BigNumber;
 
 },{}],2:[function(require,module,exports){
 let debug = true;
@@ -423,7 +423,6 @@ exports.setLib = setCurrentLib;
 exports.load = load;
 exports.parsePage = parsePage;
 exports.getLib = getLib;
-exports.getLibs = function(){return libs;};
 exports.getText = getText;
 exports.config = {
     class : htmlSelector,
@@ -432,7 +431,7 @@ exports.config = {
 
 },{}],5:[function(require,module,exports){
 exports.Game = require('./game.js');
-exports.BigNumber =require('./bignumber.js');
+exports.BigNumber = require('./bignumber.js');
 exports.View = require('./view.js');
 exports.html = require('./html.js');
 exports.localization = require('./localization.js');

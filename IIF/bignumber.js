@@ -118,4 +118,4 @@ class BigNumber {
     }
 }
 
-exports = BigNumber
+module.exports = BigNumber;
