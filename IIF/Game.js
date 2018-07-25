@@ -39,6 +39,9 @@ class Game {
         }
 
     }
+    redrawValue(key) {
+        _view.get(this).redrawComponent(_values.get(this)[key]);
+    }
     redrawValues() {
         if (this.getView().initialized === false) {
             return true;
@@ -46,7 +49,7 @@ class Game {
         let values = _values.get(this);
         let that = this;
         Object.keys(values).forEach(function(key) {
-            _view.get(that).redrawComponent(values[key].component,values[key].toStr());
+            _view.get(that).redrawComponent(values[key]);
         });
     }
     onViewInitialized () {
@@ -65,6 +68,9 @@ class Game {
         config.id = key;
         values[key] = new GameValue(config);
         _values.set(this,values);
+    }
+    getValue(key) {
+        return _values.get(this)[key].getValueObject();
     }
     load () {
 

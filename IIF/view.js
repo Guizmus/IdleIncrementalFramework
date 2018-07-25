@@ -64,10 +64,10 @@ class View {
         if (innerHTML)
             document.getElementById(config.anchor).innerHTML = innerHTML;
     }
-    redrawComponent (componentID,content) {
-        if (this.components[componentID].tpl === 'updatedValue') {
-            document.getElementById(this.components[componentID].tplBindings.id).innerHTML = content;
-        } else this.buildComponent(componentID);
+    redrawComponent (componentObj) {
+        if (this.components[componentObj.component].tpl === 'updatedValue') {
+            document.getElementById(this.components[componentObj.component].tplBindings.id).innerHTML = componentObj.toStr();
+        } else this.buildComponent(componentObj.component);
     }
     redraw () {
         let that = this;

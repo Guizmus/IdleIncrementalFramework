@@ -14,5 +14,16 @@ class Game extends _IIF.Game {
             }
         });
     }
+    addGold (quantity) {
+        this.getValue('gold').add(quantity);
+        this.redrawValue('gold')
+    }
+    multGold (exponent) {
+        let goldValue = this.getValue('gold')
+        let currentGold = goldValue.getValue();
+        currentGold = currentGold*Math.pow(10,exponent);
+        goldValue.setValue(currentGold);
+        this.redrawValue('gold')
+    }
 }
 module.exports = Game;

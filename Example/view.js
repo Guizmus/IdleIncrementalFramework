@@ -13,7 +13,7 @@ class View extends _IIF.View {
             addGold : {
                 tpl : 'control',
                 tplBindings : {
-                    onclick : '',
+                    onclick : 'game.addGold(10)',
                     text : _txt("test_output>controls>addGold"),
                 },
                 anchor : 'addGold',
@@ -21,7 +21,7 @@ class View extends _IIF.View {
             multiplyGold : {
                 tpl : 'control',
                 tplBindings : {
-                    onclick : '',
+                    onclick : 'game.multGold(1)',
                     text : _txt("test_output>controls>multGold"),
                 },
                 anchor : 'multGold',
