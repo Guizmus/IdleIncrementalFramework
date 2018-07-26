@@ -155,7 +155,9 @@ class Game {
             if ((typeof(config.langs) != "undefined") && (config.langs.length > 0)) {
                 localization.setLang(config.langs[0]);
             }
-            localization.load(config.libName,function(){localization.parsePage(config.libName)});
+            localization.load(config.libName,function(){
+                that.localize()
+            });
         }
 
         if(typeof(config.viewClass) === "undefined")
@@ -176,6 +178,10 @@ class Game {
 
         _save.set(this,new Save(config.saveKey,this));
     }
+    localize() {
+        if (!(typeof(this.config.libName) === "undefined"))
+            localization.parsePage(this.config.libName);
+    }
     redrawValue(key) {
         _view.get(this).redrawComponent(_values.get(this)[key]);
     }
@@ -195,6 +201,7 @@ class Game {
         if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
             localization.parsePage(this.config.libName);
         this.redrawValues();
+        this.localize();
     }
     registerValue (key,config) {
         let values = _values.get(this);
@@ -591,7 +598,7 @@ class Save {
             console.log('Save : migrating game savedData from ',this.data.meta.game_version,'to',this.gameObj.config.gameVersion);
 
         if (!(typeof(this.gameObj.upgradeSave) === 'undefined')) {
-            this.data.values = this.gameObj.upgradeSave(this.data.values);
+            this.data.values = this.gameObj.upgradeSave(this.data.values,this.data.meta.game_version);
         }
         this.data.meta.game_version = this.gameObj.config.gameVersion;
 
@@ -691,7 +698,7 @@ class View {
         }
         let innerHTML = html.getTpl(config.tpl,config.tplBindings);
         if (innerHTML)
-            document.getElementById(config.anchor).innerHTML = innerHTML;
+            element.innerHTML = innerHTML;
     }
     redrawComponent (componentObj) {
         if (this.components[componentObj.component].tpl === 'updatedValue') {

@@ -12,6 +12,11 @@
             <save>Save game</save>
             <load>Load game</load>
         </controls>
+        <resource>
+            <gold>
+                <label>Gold</label>
+            </gold>
+        </resource>
         <results>
             <title>Results</title>
         </results>

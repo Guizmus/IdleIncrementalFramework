@@ -7,6 +7,7 @@ class View extends _IIF.View {
         // in this example, we will use a custom TPL
         params.customTpls = {
             control : 'Example/tpl/control.tpl',
+            monitor : 'Example/tpl/monitor.tpl',
         }
         // we then will use that component for 2 controls
         params.components = {
@@ -42,14 +43,24 @@ class View extends _IIF.View {
                 },
                 anchor : 'load',
             },
+
             goldDisplay : {
+                tpl : 'monitor',
+                tplBindings : {
+                    label : _txt("test_output>resource>gold>label"),
+                    value : '',
+                    valueId : 'goldValueDisplay',
+                },
+                anchor : 'goldDisplay',
+            },
+            goldValueDisplay : {
                 tpl : 'updatedValue',
                 tplBindings : {
                     id : 'goldDisplay_value',
-                    val : 0,
+                    val : '',
                 },
-                anchor : 'goldDisplay',
-            }
+                anchor : 'goldValueDisplay',
+            },
         }
         super(params)
     }

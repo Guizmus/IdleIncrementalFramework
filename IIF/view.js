@@ -62,7 +62,7 @@ class View {
         }
         let innerHTML = html.getTpl(config.tpl,config.tplBindings);
         if (innerHTML)
-            document.getElementById(config.anchor).innerHTML = innerHTML;
+            element.innerHTML = innerHTML;
     }
     redrawComponent (componentObj) {
         if (this.components[componentObj.component].tpl === 'updatedValue') {

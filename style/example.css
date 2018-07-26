@@ -32,3 +32,22 @@
 .exampleResults {
     width : 100%;
 }
+.monitor {
+    border : 1px solid black;
+    margin : 1px;
+    width : 120px;
+    height : 30px;
+    font-size : 20px;
+    text-align : center;
+    padding : 10px 0px;
+}
+.monitor .label {
+    display : inline-block;
+}
+.monitor .value {
+    display : inline-block;
+    font-weight : bold;
+}
+.monitor .label::after {
+    content : ' : ';
+}

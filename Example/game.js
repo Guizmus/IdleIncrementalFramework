@@ -10,7 +10,7 @@ class Game extends _IIF.Game {
             gameVersion : '0.1',
             gameValues : {
                 gold : {
-                    component : 'goldDisplay',
+                    component : 'goldValueDisplay',
                     data : new _IIF.BigNumber(100,0),
                 }
             }
