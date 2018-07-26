@@ -7,12 +7,13 @@ class Game extends _IIF.Game {
             libName : 'Example', // optional, set to libName to load lang/libName.xml and activate localization using the _txt function
             viewClass : _View, // main view that will be targeted for redraws on value updates
             saveKey : 'example', // necessary for the save/load functions to work
-            gameVersion : '0.1',
-            gameValues : {
+            gameVersion : '0.1', // used for save migration/versioning
+            ticks : true,// if set to true, activates the worker to tick when needed, activates the functions game.unpause, game.pause and game.restart
+            gameValues : { // game values are saved, and are linked to a view component for redraw. it gives handles like game.getValue(valueKey) (passed as reference) and game.redrawValue(valueKey) for a targeted redraw
                 gold : {
-                    component : 'goldValueDisplay',
-                    data : new _IIF.BigNumber(100,0),
-                }
+                    component : 'goldValueDisplay', // the component that will be used. Needs to be declared in the view
+                    data : new _IIF.BigNumber(100,0), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behavior
+                },
             }
         });
     }

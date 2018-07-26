@@ -1,5 +1,4 @@
 let _IIF = require("../IIF/main");
-_IIF.html.defineTpl('control','Example/tpl/control.tpl');
 let _txt = _IIF.html.localizedText;
 
 class View extends _IIF.View {
@@ -9,6 +8,9 @@ class View extends _IIF.View {
             control : 'Example/tpl/control.tpl',
             monitor : 'Example/tpl/monitor.tpl',
         }
+        // you can also define tpl during runtime with :
+        // _IIF.html.defineTpl('control','Example/tpl/control.tpl');
+
         // we then will use that component for 2 controls
         params.components = {
             addGold : {
@@ -50,6 +52,30 @@ class View extends _IIF.View {
                     text : _txt("test_output>controls>load"),
                 },
                 anchor : 'load',
+            },
+            startTime : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.unpause()',
+                    text : _txt("test_output>controls>unpause"),
+                },
+                anchor : 'unpause',
+            },
+            stopTime : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.pause()',
+                    text : _txt("test_output>controls>pause"),
+                },
+                anchor : 'pause',
+            },
+            tick : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.tick()',
+                    text : _txt("test_output>controls>tick"),
+                },
+                anchor : 'tick',
             },
 
             goldDisplay : {

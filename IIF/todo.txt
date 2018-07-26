@@ -1,8 +1,0 @@
-features :
-    save/load
-    save updating : version and offline time
-    classic UI elements
-    targeted refresh
-    progress bars
-    Exponential value display with refresh
-    Leveled value

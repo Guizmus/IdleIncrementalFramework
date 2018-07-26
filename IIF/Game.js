@@ -1,12 +1,14 @@
 let debug = true;
 let localization = require('./localization');
 let view = require('./view');
-let GameValue = require('./gamevalue');
+let GameValue = require('./dataStruct/gamevalue');
 let Save = require('./save');
+let Time = require('./time');
 
 let _view = new WeakMap();
 let _values = new WeakMap();
 let _save = new WeakMap();
+let _time = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -42,12 +44,13 @@ class Game {
             this.redrawValues();
         }
 
+        if (!(typeof(config.ticks) === "undefined")) {
+            _time.set(this,new Time(this));
+        }
+
         _save.set(this,new Save(config.saveKey,this));
     }
-    localize() {
-        if (!(typeof(this.config.libName) === "undefined"))
-            localization.parsePage(this.config.libName);
-    }
+    // values management
     redrawValue(key) {
         _view.get(this).redrawComponent(_values.get(this)[key]);
     }
@@ -60,14 +63,6 @@ class Game {
         Object.keys(values).forEach(function(key) {
             _view.get(that).redrawComponent(values[key]);
         });
-    }
-    onViewInitialized () {
-        if (debug)
-            console.log("Game : View initialized",this)
-        if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
-            localization.parsePage(this.config.libName);
-        this.redrawValues();
-        this.localize();
     }
     registerValue (key,config) {
         let values = _values.get(this);
@@ -85,12 +80,18 @@ class Game {
     getValue(key) {
         return _values.get(this)[key].getValueObject();
     }
-    load () {
-        _save.get(this).load();
-        this.redrawValues();
+    // view management
+    localize() {
+        if (!(typeof(this.config.libName) === "undefined"))
+            localization.parsePage(this.config.libName);
     }
-    save () {
-        _save.get(this).save();
+    onViewInitialized () {
+        if (debug)
+            console.log("Game : View initialized",this)
+        if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
+            localization.parsePage(this.config.libName);
+        this.redrawValues();
+        this.localize();
     }
     getView () {
         return _view.get(this);
@@ -101,9 +102,40 @@ class Game {
     update (target) {
         _view.get(this).update(target);
     }
-    log() {
-        if (debug)
-            console.log("Game : log function",this);
+    //save management
+    load () {
+        _save.get(this).load();
+        this.redrawValues();
+    }
+    save () {
+        _save.get(this).save();
+    }
+    //time management
+    getTicker() {
+        if (this.config.ticks)
+            return _time.get(this);
+    }
+    unpause () {
+        if (this.config.ticks)
+            _time.get(this).unpause();
+    }
+    pause () {
+        if (this.config.ticks)
+            _time.get(this).pause();
+    }
+    restart () {
+        if (this.config.ticks)
+            _time.get(this).restart();
+    }
+    tick () {
+        if (this.config.ticks)
+            _time.get(this).tick();
+    }
+    processTicks (tickCount) {
+        if(debug)
+            console.log("Game : processing ticks, tickCount :",tickCount);
+
+
     }
 }
 module.exports = Game;

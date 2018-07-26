@@ -12,6 +12,9 @@
             <resetGold>Reset gold</resetGold>
             <save>Save game</save>
             <load>Load game</load>
+            <pause>Pause time</pause>
+            <unpause>Unpause time</unpause>
+            <tick>Get Tick</tick>
         </controls>
         <resource>
             <gold>
