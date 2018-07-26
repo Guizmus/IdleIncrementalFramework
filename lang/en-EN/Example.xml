@@ -9,6 +9,8 @@
             <title>Controls</title>
             <addGold>Add gold</addGold>
             <multGold>Multiply gold</multGold>
+            <save>Save game</save>
+            <load>Load game</load>
         </controls>
         <results>
             <title>Results</title>

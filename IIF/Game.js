@@ -1,10 +1,12 @@
 let debug = true;
 let localization = require('./localization');
 let view = require('./view');
-let GameValue = require('./gamevalue.js');
+let GameValue = require('./gamevalue');
+let Save = require('./save');
 
 let _view = new WeakMap();
 let _values = new WeakMap();
+let _save = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -38,6 +40,7 @@ class Game {
             this.redrawValues();
         }
 
+        _save.set(this,new Save(config.saveKey,this));
     }
     redrawValue(key) {
         _view.get(this).redrawComponent(_values.get(this)[key]);
@@ -69,14 +72,18 @@ class Game {
         values[key] = new GameValue(config);
         _values.set(this,values);
     }
+    listValues() {
+        return Object.keys(_values.get(this));
+    }
     getValue(key) {
         return _values.get(this)[key].getValueObject();
     }
     load () {
-
+        _save.get(this).load();
+        this.redrawValues();
     }
     save () {
-
+        _save.get(this).save();
     }
     getView () {
         return _view.get(this);

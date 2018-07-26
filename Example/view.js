@@ -26,6 +26,22 @@ class View extends _IIF.View {
                 },
                 anchor : 'multGold',
             },
+            save : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.save()',
+                    text : _txt("test_output>controls>save"),
+                },
+                anchor : 'save',
+            },
+            load : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.load()',
+                    text : _txt("test_output>controls>load"),
+                },
+                anchor : 'load',
+            },
             goldDisplay : {
                 tpl : 'updatedValue',
                 tplBindings : {

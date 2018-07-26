@@ -120,6 +120,12 @@ class BigNumber {
         }
         return displayValue+suffix;
     }
+    toJSON () {
+        return _value.get(this);
+    }
+    fromJSON(json) {
+        _value.set(this,json);
+    }
 }
 
 module.exports = BigNumber;

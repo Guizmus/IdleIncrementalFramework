@@ -121,6 +121,12 @@ class BigNumber {
         }
         return displayValue+suffix;
     }
+    toJSON () {
+        return _value.get(this);
+    }
+    fromJSON(json) {
+        _value.set(this,json);
+    }
 }
 
 module.exports = BigNumber;
@@ -129,10 +135,12 @@ module.exports = BigNumber;
 let debug = true;
 let localization = require('./localization');
 let view = require('./view');
-let GameValue = require('./gamevalue.js');
+let GameValue = require('./gamevalue');
+let Save = require('./save');
 
 let _view = new WeakMap();
 let _values = new WeakMap();
+let _save = new WeakMap();
 
 class Game {
     constructor(config) {
@@ -166,6 +174,7 @@ class Game {
             this.redrawValues();
         }
 
+        _save.set(this,new Save(config.saveKey,this));
     }
     redrawValue(key) {
         _view.get(this).redrawComponent(_values.get(this)[key]);
@@ -197,14 +206,18 @@ class Game {
         values[key] = new GameValue(config);
         _values.set(this,values);
     }
+    listValues() {
+        return Object.keys(_values.get(this));
+    }
     getValue(key) {
         return _values.get(this)[key].getValueObject();
     }
     load () {
-
+        _save.get(this).load();
+        this.redrawValues();
     }
     save () {
-
+        _save.get(this).save();
     }
     getView () {
         return _view.get(this);
@@ -222,7 +235,7 @@ class Game {
 }
 module.exports = Game;
 
-},{"./gamevalue.js":3,"./localization":5,"./view":8}],3:[function(require,module,exports){
+},{"./gamevalue":3,"./localization":5,"./save":7,"./view":9}],3:[function(require,module,exports){
 let debug = true;
 let SavedValue = require('./savedValue');
 
@@ -237,7 +250,7 @@ class GameValue extends SavedValue {
 }
 module.exports = GameValue;
 
-},{"./savedValue":7}],4:[function(require,module,exports){
+},{"./savedValue":8}],4:[function(require,module,exports){
 let debug = true;
 
 let localization = require('./localization');
@@ -496,14 +509,98 @@ exports.config = {
 }
 
 },{}],6:[function(require,module,exports){
+exports.IIF_version = '0.0.1';
+
 exports.Game = require('./game.js');
 exports.BigNumber = require('./bignumber.js');
 exports.View = require('./view.js');
 exports.html = require('./html.js');
 exports.localization = require('./localization.js');
+
 window.IIF = exports;
 
-},{"./bignumber.js":1,"./game.js":2,"./html.js":4,"./localization.js":5,"./view.js":8}],7:[function(require,module,exports){
+},{"./bignumber.js":1,"./game.js":2,"./html.js":4,"./localization.js":5,"./view.js":9}],7:[function(require,module,exports){
+let debug = true;
+
+let _IIF = require("./main");
+
+class Save {
+    constructor (saveKey,gameObj) {
+        this.saveKey = saveKey+"_IIFSave";
+        this.gameObj = gameObj;
+        if (this.hasSaveData()) {
+            this.load();
+        } else
+            this.newSave();
+    }
+    hasSaveData () {
+        return !(localStorage.getItem(this.saveKey) === null);
+    }
+    newSave () {
+        return {
+            meta : {IIF_version : _IIF.IIF_version,game_version : window.game.config.gameVersion},
+            values : {},
+        }
+    }
+    save() {
+        let that = this;
+        this.gameObj.listValues().forEach(function(key) {
+            that.data.values[key] = that.gameObj.getValue(key).toJSON();
+        });
+
+        if (debug)
+            console.log('Save : saving data to localstorage',this.data);
+
+        localStorage.setItem(this.saveKey,JSON.stringify(this.data));
+    }
+    load() {
+        let that = this;
+        this.data = JSON.parse(localStorage.getItem(this.saveKey));
+        this.upgradeSave_IIF();
+        this.upgradeSave_Game();
+        if (debug)
+            console.log('Save : loading data from localstorage',this.data);
+        this.gameObj.listValues().forEach(function(key) {
+            that.gameObj.getValue(key).fromJSON(that.data.values[key]);
+        });
+        return this.data;
+    }
+    upgradeSave_IIF() {
+
+        if (this.data.meta.IIF_version === _IIF.IIF_version)
+            return;
+
+        if (debug)
+            console.log('Save : migrating IIF savedData from ',this.data.meta.IIF_version,'to',_IIF.IIF_version);
+
+        switch(this.data.meta.IIF_version) {
+            case '0.0.1' : ;// add here the migration code for saveData from 0.0.1 to the next version. Don't put a break, and put versions in chronological order to trigger all the upgrades necessary
+                // this.data.values = this.data.data;
+                // delete(this.data.data);
+            default:break;
+        }
+        this.data.meta.IIF_version = _IIF.IIF_version;
+
+    }
+    upgradeSave_Game () {
+
+        if (this.data.meta.game_version === this.gameObj.config.gameVersion)
+            return;
+
+        if (debug)
+            console.log('Save : migrating game savedData from ',this.data.meta.game_version,'to',this.gameObj.config.gameVersion);
+
+        if (!(typeof(this.gameObj.upgradeSave) === 'undefined')) {
+            this.data.values = this.gameObj.upgradeSave(this.data.values);
+        }
+        this.data.meta.game_version = this.gameObj.config.gameVersion;
+
+    }
+}
+
+module.exports = Save;
+
+},{"./main":6}],8:[function(require,module,exports){
 let debug = false;
 
 let datas = new WeakMap();
@@ -521,15 +618,15 @@ class SavedValue {
         return this.getValueObject().toStr();
     }
     toJSON () {
-
+        return datas.get(this).toJSON();
     }
     fromJSON(json) {
-
+        datas.get(this).fromJSON(json);
     }
 }
 module.exports = SavedValue;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 let debug = true;
 let html = require('./html');
 let tplsToLoad = new WeakMap();
