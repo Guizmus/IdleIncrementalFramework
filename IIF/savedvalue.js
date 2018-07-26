@@ -15,10 +15,10 @@ class SavedValue {
         return this.getValueObject().toStr();
     }
     toJSON () {
-        return datas.get(this).toJSON();
+        return this.getValueObject().toJSON();
     }
     fromJSON(json) {
-        datas.get(this).fromJSON(json);
+        this.getValueObject().fromJSON(json);
     }
 }
 module.exports = SavedValue;
