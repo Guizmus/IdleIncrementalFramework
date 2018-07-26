@@ -57,7 +57,7 @@ class View {
         let element = document.getElementById(config.anchor);
         if (element === null) {
             if(debug)
-                console.log("View ; trying to build an element but the anchor can't be found",componentID,config,document.getElementById(config.anchor))
+                console.log("View : trying to build an element but the anchor can't be found",componentID)
             return false;
         }
         let innerHTML = html.getTpl(config.tpl,config.tplBindings);
@@ -66,7 +66,13 @@ class View {
     }
     redrawComponent (componentObj) {
         if (this.components[componentObj.component].tpl === 'updatedValue') {
-            document.getElementById(this.components[componentObj.component].tplBindings.id).innerHTML = componentObj.toStr();
+            let element = document.getElementById(this.components[componentObj.component].tplBindings.id);
+            if (element) {
+                element.innerHTML = componentObj.toStr();
+            } else {
+                if(debug)
+                    console.log("View : trying to redraw an element but the anchor can't be found",componentID)
+            }
         } else this.buildComponent(componentObj.component);
     }
     redraw () {

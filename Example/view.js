@@ -53,6 +53,15 @@ class View extends _IIF.View {
                 },
                 anchor : 'load',
             },
+            clearSave : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.clearSave()',
+                    text : _txt("test_output>controls>clearSave"),
+                },
+                anchor : 'clearSave',
+            },
+
             startTime : {
                 tpl : 'control',
                 tplBindings : {

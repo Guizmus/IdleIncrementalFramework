@@ -11,9 +11,6 @@ class SavedValue {
     getValueObject() {
         return datas.get(this);
     }
-    toStr() {
-        return this.getValueObject().toStr();
-    }
     toJSON () {
         return this.getValueObject().toJSON();
     }

@@ -110,6 +110,9 @@ class Game {
     save () {
         _save.get(this).save();
     }
+    clearSave () {
+        _save.get(this).clearSave();
+    }
     //time management
     getTicker() {
         if (this.config.ticks)

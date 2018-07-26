@@ -8,15 +8,25 @@ class Save {
         this.gameObj = gameObj;
         if (this.hasSaveData()) {
             this.load();
-        } else
-            this.newSave();
+        } else {
+            this.data = this.newSave();
+            this.save();
+            this.load();
+        }
     }
     hasSaveData () {
         return !(localStorage.getItem(this.saveKey) === null);
     }
+    clearSave () {
+        localStorage.removeItem(this.saveKey);
+        window.location.reload();
+    }
     newSave () {
         return {
-            meta : {IIF_version : _IIF.IIF_version,game_version : window.game.config.gameVersion},
+            meta : {
+                IIF_version : _IIF.IIF_version,
+                game_version : this.gameObj.config.gameVersion
+            },
             values : {},
         }
     }

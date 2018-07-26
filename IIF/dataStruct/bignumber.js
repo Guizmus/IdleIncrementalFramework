@@ -8,11 +8,12 @@ class BigNumber {
     constructor (initialValue,displayPrecision) {
         let preciseValue = initialValue.toExponential().split('e');
         this.display_mode = 'toShortSuffix';
-        _value.set(this,{
+        let datas = {
             preciseValue : Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1)),
             exponent : (preciseValue[1])*1 -innerPrecision+1,
             precision : displayPrecision,
-        })
+        };
+        _value.set(this,datas)
     }
     setValue (initialValue) {
         let preciseValue = initialValue.toExponential().split('e');
@@ -32,7 +33,7 @@ class BigNumber {
     }
     add (toAdd) {
         let value = this.getValue();
-        value += toAdd;
+        value = value + toAdd;
         this.setValue(value);
     }
     toStr () {

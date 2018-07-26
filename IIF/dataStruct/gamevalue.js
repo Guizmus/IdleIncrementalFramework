@@ -9,5 +9,8 @@ class GameValue extends SavedValue {
         this.id = config.id;
         this.component = config.component;
     }
+    toStr() {
+        return this.getValueObject().toStr();
+    }
 }
 module.exports = GameValue;
