@@ -37,5 +37,9 @@ class Game extends _IIF.Game {
         goldValue.setValue(currentGold);
         this.redrawValue('gold')
     }
+    resetGold () {
+        this.getValue('gold').setValue(100);
+        this.redrawValue('gold')
+    }
 }
 module.exports = Game;

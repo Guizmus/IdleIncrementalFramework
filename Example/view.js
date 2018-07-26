@@ -27,6 +27,14 @@ class View extends _IIF.View {
                 },
                 anchor : 'multGold',
             },
+            resetGold : {
+                tpl : 'control',
+                tplBindings : {
+                    onclick : 'game.resetGold()',
+                    text : _txt("test_output>controls>resetGold"),
+                },
+                anchor : 'resetGold',
+            },
             save : {
                 tpl : 'control',
                 tplBindings : {
