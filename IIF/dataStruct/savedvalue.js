@@ -5,7 +5,7 @@ let datas = new WeakMap();
 class SavedValue {
     constructor (data) {
         if (debug)
-            console.log("SavedValue : creating a new value",config);
+            console.log("SavedValue : creating a new value",data);
         datas.set(this,data);
     }
     getValueObject() {

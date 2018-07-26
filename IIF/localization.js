@@ -136,16 +136,18 @@ function getLib (lib) {
 function getText(_path,lib) {
     lib = getLib(lib);
     try {
-        let path = _path.split(">");
-        while (part = path.shift()) {
-            lib = lib[part];
+        if (lib) {
+            let path = _path.split(">");
+            while (part = path.shift()) {
+                lib = lib[part];
+            }
+            return lib['#text'];
         }
-        return lib['#text'];
     } catch (error) {
         if (debug)
             console.log("Localization : Error retrieving the text for the key",_path)
-        return "["+_path+"]";
     }
+    return "["+_path+"]";
 }
 
 function parsePage (libName) {
