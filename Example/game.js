@@ -12,7 +12,10 @@ class Game extends _IIF.Game {
             gameValues : { // game values are saved, and are linked to a view component for redraw. it gives handles like game.getValue(valueKey) (passed as reference) and game.redrawValue(valueKey) for a targeted redraw
                 gold : {
                     component : 'goldValueDisplay', // the component that will be used. Needs to be declared in the view
-                    data : new _IIF.BigNumber(100,0), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behavior
+                    data : new _IIF.dataStruct.BreakInfinity(100), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
+                    // data : new _IIF.dataStruct.BigNumber(100,0), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
+
+                },
                 },
             }
         });
