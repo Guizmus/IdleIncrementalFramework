@@ -10,6 +10,8 @@ let _values = new WeakMap();
 let _save = new WeakMap();
 let _time = new WeakMap();
 
+let reservedValues = ["time"];
+
 class Game {
     constructor(config) {
 
@@ -45,7 +47,7 @@ class Game {
         }
 
         if (!(typeof(config.ticks) === "undefined")) {
-            _time.set(this,new Time(this));
+            _time.set(this,new Time(this,config.ticks));
         }
 
         _save.set(this,new Save(config.saveKey,this));
@@ -65,6 +67,10 @@ class Game {
         });
     }
     registerValue (key,config) {
+        if (reservedValues.indexOf(key)>=0) {
+            console.error('Game : trying to register a value with a reserved key :',key);
+            return false;
+        }
         let values = _values.get(this);
         if (!(typeof(values[key]) === "undefined")) {
             console.warn('Game : trying to create a registered value with an already taken identifier :',key)

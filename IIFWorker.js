@@ -6,11 +6,13 @@ let currentTick = 0;
 let currentTime = false;
 let relicat = 0;
 
-function initialize () {
+function initialize (tps) {
     running = false;
     currentTick = 0;
     currentTime = false;
     relicat = 0;
+    if (!(typeof(tps) === "undefined"))
+        ticksPerSecond = tps;
 }
 
 function start () {
@@ -45,9 +47,19 @@ function pause () {
 
 self.addEventListener('message',  e => {
     let ticks = 0;
-    switch(e.data) {
-        case 'restart' :
+    switch(e.data.action) {
+        case 'setState' :
+            if (debug)
+                console.log("IIF Worker : setting state",e.data);
             initialize();
+            currentTick = e.data.ticks;
+            if (e.data.running)
+                start();
+            break;
+        case 'restart' :
+            if (debug)
+                console.log("IIF Worker : restarting the time");
+            initialize(e.data.ticksPerSecond);
             break;
         case 'unpause' :
             if (debug)

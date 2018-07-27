@@ -35,6 +35,9 @@ class Save {
         this.gameObj.listValues().forEach(function(key) {
             that.data.values[key] = that.gameObj.getValue(key).toJSON();
         });
+        if (this.gameObj.config.ticks) {
+            this.data.time = this.gameObj.getTicker().toJSON();
+        }
 
         if (debug)
             console.log('Save : saving data to localstorage',this.data);
@@ -51,6 +54,9 @@ class Save {
         this.gameObj.listValues().forEach(function(key) {
             that.gameObj.getValue(key).fromJSON(that.data.values[key]);
         });
+        if ((this.gameObj.config.ticks) && !(typeof(this.data.time) === "undefined")) {
+            this.gameObj.getTicker().fromJSON(this.data.time);
+        }
         return this.data;
     }
     upgradeSave_IIF() {

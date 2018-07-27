@@ -8,7 +8,7 @@ class Game extends _IIF.Game {
             viewClass : _View, // main view that will be targeted for redraws on value updates
             saveKey : 'example', // necessary for the save/load functions to work
             gameVersion : '0.1', // used for save migration/versioning
-            ticks : true,// if set to true, activates the worker to tick when needed, activates the functions game.unpause, game.pause and game.restart
+            ticks : 50,// if set to a value, activates the worker to tick when needed, activates the functions game.unpause, game.pause and game.restart. Target as many ticks per second as the value
             gameValues : { // game values are saved, and are linked to a view component for redraw. it gives handles like game.getValue(valueKey) (passed as reference) and game.redrawValue(valueKey) for a targeted redraw
 
                 gold : {
