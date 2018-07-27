@@ -9,7 +9,7 @@ The example is baking IIF with itself, using browserify and will need the follow
 * run node_modules_install.bat to install the dependancies in the project
 * run build.bat to rebuild the example.js file from the sources.
 
-###Using the lib
+### Using the lib
 The example is documented to help use the lib.
 To effectively use the features of the lib, you will need to instance the IIF.Game class providing valid parameters. The example extends the Game class to add functionalities.
 
@@ -20,7 +20,7 @@ The title tag is completed from the XML because of that. Using IIF.html.localize
 view.js uses this a lot in the example.
 
 ### BigNumber Data Structure
-Using exponentially growing numbers is a common thing in Incrementals. The IIF.BigNumber class stores a big number, using maximum Number precision available, and managing the exponent on its own.
+Using exponentially growing numbers is a common thing in Incrementals. The IIF.DataStruct classes store a big number. You can use the Decimal structure for precision, or the breakInfinity structure for calculation speed.
 
 It gives multiple formating output :
 * Scientific through toScientific
@@ -37,7 +37,7 @@ it exposes the methods :
 * setPrecision : the displayed precision
 * getValue : the Float value, calculated on call
 
-###gameValues
+### gameValues
 GameValues are objects built from the constructor of the Game class that link a data structure, like BigNumber, and a view component.
 Every game value has its data saved and loaded with the built in save system.
 
@@ -48,7 +48,11 @@ The data structure needs to have the methods :
 
 The component needs to be defined in the view
 
-###View templates and targeted redraw
+### Behaviours
+ 
+### View templates and targeted redraw
 The provided view class has access to built in templates for updated value and localized text.
 When declaring you Game object, using a custom view class extending the IIF.View class will let you declare custom tpls.
 Custom Tpls are loaded at the start of runtime, so using this feature will wait for the templates to be loaded before building components out of it.
+
+ ### Time
