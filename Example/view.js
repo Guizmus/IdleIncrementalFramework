@@ -104,6 +104,23 @@ class View extends _IIF.View {
                 },
                 anchor : 'goldValueDisplay',
             },
+            manaDisplay : {
+                tpl : 'monitor',
+                tplBindings : {
+                    label : _txt("test_output>resource>mana>label"),
+                    value : '',
+                    valueId : 'manaValueDisplay',
+                },
+                anchor : 'manaDisplay',
+            },
+            manaValueDisplay : {
+                tpl : 'updatedValue',
+                tplBindings : {
+                    id : 'manaDisplay_value',
+                    val : '',
+                },
+                anchor : 'manaValueDisplay',
+            },
         }
         super(params)
     }

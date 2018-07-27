@@ -21,6 +21,9 @@
             <gold>
                 <label>Gold</label>
             </gold>
+            <mana>
+                <label>Mana</label>
+            </mana>
         </resource>
         <results>
             <title>Results</title>
