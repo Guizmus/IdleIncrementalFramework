@@ -10,11 +10,18 @@ class Game extends _IIF.Game {
             gameVersion : '0.1', // used for save migration/versioning
             ticks : true,// if set to true, activates the worker to tick when needed, activates the functions game.unpause, game.pause and game.restart
             gameValues : { // game values are saved, and are linked to a view component for redraw. it gives handles like game.getValue(valueKey) (passed as reference) and game.redrawValue(valueKey) for a targeted redraw
-                gold : {
-                    component : 'goldValueDisplay', // the component that will be used. Needs to be declared in the view
-                    data : new _IIF.dataStruct.BreakInfinity(100), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
-                    // data : new _IIF.dataStruct.BigNumber(100,0), // the data structure that is used. needs to implement at least toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
 
+                gold : {
+                    // let's define the gold values
+                    component : 'goldValueDisplay',
+                     // the component that will be used. Needs to be declared in the view using the same componentID or will raise errors
+
+                    data : new _IIF.dataStruct.Decimal(100,3),
+                    // params are initial value and precision to display
+                    // depending on what you do with this value, you may want to use
+                    // IIF.dataStruct.Decimal for more precise values, with big numbers
+                    // IIF.dataStruct.BreakInfinity for fast calculation, with big numbers
+                    // another class that you build, that presents the methods toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
                 },
                 },
             }

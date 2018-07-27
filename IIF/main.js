@@ -2,8 +2,8 @@ exports.IIF_version = '0.0.1';
 
 exports.Game = require('./game.js');
 exports.dataStruct = {
-    BigNumber : require('./dataStruct/bignumber.js'),
     BreakInfinity : require('./dataStruct/breakinfinity.js'),
+    Decimal : require('./dataStruct/decimal.js'),
 }
 exports.View = require('./view.js');
 exports.html = require('./html.js');

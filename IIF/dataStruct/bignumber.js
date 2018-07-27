@@ -1,73 +1,54 @@
-let debug = false;
+let debug = true;
 
-let innerPrecision = Number.MAX_SAFE_INTEGER.toExponential().split("e+")[1] -1; // usually 14
-
+let _valueClass = new WeakMap();
 let _value = new WeakMap();
+let decimal = require('../lib/decimal.js');
+
+function getExponent (value) {
+    let split = value.toExponential().split('e')
+    let displayExponent = split[1] * 1;
+    let displayValue = split[0] * 1;
+    let removedExponent = displayExponent%3;
+    displayExponent -= removedExponent;
+    displayValue *= Math.pow(10,removedExponent);
+    return {
+        value : displayValue,
+        exponent : displayExponent,
+    }
+}
 
 class BigNumber {
-    constructor (initialValue,displayPrecision) {
-        let preciseValue = initialValue.toExponential().split('e');
+    constructor (valueClass,precision) {
+        this.precision = precision;
         this.display_mode = 'toShortSuffix';
-        let datas = {
-            preciseValue : Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1)),
-            exponent : (preciseValue[1])*1 -innerPrecision+1,
-            precision : displayPrecision,
-        };
-        _value.set(this,datas)
+        _valueClass.set(this,valueClass);
     }
     setValue (initialValue) {
-        let preciseValue = initialValue.toExponential().split('e');
-        let value = _value.get(this);
-        value.preciseValue = Math.floor(preciseValue[0]*Math.pow(10,innerPrecision-1));
-        value.exponent = (preciseValue[1])*1 -innerPrecision+1,
-        _value.set(this,value);
+        _value.set(this,new (_valueClass.get(this))(initialValue))
     }
-    setPrecision (precision) {
-        let value = _value.get(this);
-        value.precision = precision;
-        _value.set(this,value);
+    setValueObj (valueObj) {
+        _value.set(this,valueObj)
     }
     getValue () {
-        let value = _value.get(this);
-        return value.preciseValue*Math.pow(10,value.exponent);
+        return _value.get(this);
     }
     add (toAdd) {
-        let value = this.getValue();
-        value = value + toAdd;
-        this.setValue(value);
+        _value.set(this,this.getValue().add(toAdd));
     }
     toStr () {
         return this[this.display_mode]();
     }
     toScientific () {
-        let value = _value.get(this);
-        let preciseSplit = value.preciseValue.toExponential().split('e')
-        let displayExponent = preciseSplit[1]*1+value.exponent;
-        let displayValue = (preciseSplit[0]*1).toFixed(value.precision);
-        return displayValue+"e"+(displayExponent > 0 ? '+' : '')+displayExponent;
+        return this.getValue().toExponential();
     }
     toEngineering () {
-        let value = _value.get(this);
-        let preciseSplit = value.preciseValue.toExponential().split('e');
-        let displayExponent = preciseSplit[1]*1+value.exponent;
-        let displayValue = (preciseSplit[0]*1);
-        let removedExponent = displayExponent%3;
-        displayExponent -= removedExponent;
-        displayValue *= Math.pow(10,removedExponent);
-        displayValue = displayValue.toFixed(value.precision);
-        return displayValue+"e"+(displayExponent > 0 ? '+' : '')+displayExponent;
+        let valueParts = getExponent(_value.get(this));
+        return valueParts.value.toFixed(this.precision)+"e"+(valueParts.exponent > 0 ? '+' : '')+valueParts.exponent;
     }
     toShortSuffix () {
-        let value = _value.get(this);
-        let preciseSplit = value.preciseValue.toExponential().split('e');
-        let displayExponent = preciseSplit[1]*1+value.exponent;
-        let displayValue = (preciseSplit[0]*1);
-        let removedExponent = displayExponent%3;
-        displayExponent -= removedExponent;
-        displayValue *= Math.pow(10,removedExponent);
-        displayValue = displayValue.toFixed(value.precision);
-        let suffix = "e"+(displayExponent > 0 ? '+' : '')+displayExponent
-        switch (displayExponent/3) {
+        let valueParts = getExponent(_value.get(this));
+        let suffix = "e"+(valueParts.exponent > 0 ? '+' : '')+valueParts.exponent
+        switch (valueParts.exponent/3) {
             case -8 : suffix = 'y';break;
             case -7 : suffix = 'z';break;
             case -6 : suffix = 'a';break;
@@ -87,19 +68,12 @@ class BigNumber {
             case 8 : suffix = 'Y';break;
             default:break;
         }
-        return displayValue+suffix;
+        return valueParts.value.toFixed(this.precision)+suffix;
     }
     toLongSuffix () {
-        let value = _value.get(this);
-        let preciseSplit = value.preciseValue.toExponential().split('e');
-        let displayExponent = preciseSplit[1]*1+value.exponent;
-        let displayValue = (preciseSplit[0]*1);
-        let removedExponent = displayExponent%3;
-        displayExponent -= removedExponent;
-        displayValue *= Math.pow(10,removedExponent);
-        displayValue = displayValue.toFixed(value.precision);
-        let suffix = "e"+(displayExponent > 0 ? '+' : '')+displayExponent
-        switch (displayExponent/3) {
+        let valueParts = getExponent(_value.get(this));
+        let suffix = "e"+(valueParts.exponent > 0 ? '+' : '')+valueParts.exponent
+        switch (valueParts.exponent/3) {
             case -8 : suffix = 'yocto';break;
             case -7 : suffix = 'zepto';break;
             case -6 : suffix = 'atto';break;
@@ -119,13 +93,7 @@ class BigNumber {
             case 8 : suffix = 'yotta';break;
             default:break;
         }
-        return displayValue+suffix;
-    }
-    toJSON () {
-        return _value.get(this);
-    }
-    fromJSON(json) {
-        _value.set(this,json);
+        return valueParts.value.toFixed(this.precision)+suffix;
     }
 }
 
