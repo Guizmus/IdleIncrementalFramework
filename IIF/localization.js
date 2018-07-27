@@ -1,10 +1,10 @@
 let debug = false;
+
+//glabol params
 let defaultLang = 'en-EN';
 let supportedLang = 'en-EN';
-
 let htmlSelector = 'loc'; // class to add to the html tag to localize
 let htmlDataKey = 'lk'; // data key to use to store the path to text
-
 let key = 'lang'; // key used in the get parameter of the URL to set a specific language
 
 let currentLang = undefined;

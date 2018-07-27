@@ -1,5 +1,6 @@
 let _IIF = require("../IIF/main");
 let _View = require("./view");
+
 class Game extends _IIF.Game {
     constructor(args) {
         super({
@@ -23,8 +24,7 @@ class Game extends _IIF.Game {
                     // IIF.dataStruct.BreakInfinity for fast calculation, with big numbers
                     // another class that you build, that presents the methods toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
                 },
-                },
-            }
+            },
         });
     }
     upgradeSave (saveData,fromVersion) {

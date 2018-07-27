@@ -1,4 +1,5 @@
 let debug = true;
+
 let localization = require('./localization');
 let view = require('./view');
 let GameValue = require('./dataStruct/gamevalue');
@@ -16,7 +17,7 @@ class Game {
     constructor(config) {
 
         if (debug)
-            console.log("Game : new game",config)
+            console.log("Game : new Game()",config);
 
         this.config = config;
         let that = this;

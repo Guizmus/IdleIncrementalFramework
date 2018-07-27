@@ -1,15 +1,19 @@
 let debug = true;
+
 let html = require('./html');
-let tplsToLoad = new WeakMap();
+
+let _tplsToLoad = new WeakMap();
 
 class View {
     constructor (config) {
+
         if (debug)
-            console.log("View : creating a new view",config)
+            console.log("View : new View()",config);
+
         this.config = config;
         this.components = {};
         if (!(typeof(config.customTpls) === "undefined")) {
-            tplsToLoad.set(this,Object.keys(config.customTpls).length);
+            _tplsToLoad.set(this,Object.keys(config.customTpls).length);
             let that = this;
             this.initialized = false;
             Object.keys(config.customTpls).forEach(function(key) {
@@ -20,8 +24,8 @@ class View {
         }
     }
     finishTplLoading() {
-        tplsToLoad.set(this,tplsToLoad.get(this)-1);
-        if (tplsToLoad.get(this)<=0) {
+        _tplsToLoad.set(this,_tplsToLoad.get(this)-1);
+        if (_tplsToLoad.get(this)<=0) {
             this.onInitialized();
         }
     }

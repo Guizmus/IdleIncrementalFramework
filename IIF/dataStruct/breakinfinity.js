@@ -1,11 +1,16 @@
 let debug = true;
 
-let _value = new WeakMap();
 let break_infinity = require('../lib/break_infinity.js');
 let BigNumber = require('./bignumber.js');
 
+let _value = new WeakMap();
+
 class BreakInfinity extends BigNumber {
     constructor (initialValue,precision) {
+
+        if (debug)
+            console.log("BreakInfinity : new BreakInfinity()",initialValue,precision);
+
         super(break_infinity,precision);
         this.setValue(initialValue);
     }

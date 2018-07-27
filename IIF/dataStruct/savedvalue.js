@@ -1,15 +1,17 @@
 let debug = false;
 
-let datas = new WeakMap();
+let _datas = new WeakMap();
 
 class SavedValue {
     constructor (data) {
+
         if (debug)
-            console.log("SavedValue : creating a new value",data);
-        datas.set(this,data);
+            console.log("SavedValue : new SavedValue()",data);
+
+        _datas.set(this,data);
     }
     getValueObject() {
-        return datas.get(this);
+        return _datas.get(this);
     }
     toJSON () {
         return this.getValueObject().toJSON();
