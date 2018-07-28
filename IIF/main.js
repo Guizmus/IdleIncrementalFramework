@@ -1,4 +1,4 @@
-exports.IIF_version = '0.0.1';
+exports.IIF_version = '0.0.2';
 
 exports.Game = require('./game.js');
 exports.dataStruct = {
