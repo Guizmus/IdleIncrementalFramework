@@ -54,7 +54,13 @@
 #hammerDisplay {
   background: silver;
   height: 50px;
-  width : 200px;
+  width : 100%;
   text-align: center;
   font: 20px Helvetica, Arial, sans-serif;
+}
+.exampleResults .display {
+    width : 250px;
+    display : inline-block;
+    margin : 1px;
+    border : 1px solid black;
 }

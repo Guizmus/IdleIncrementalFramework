@@ -24,6 +24,7 @@
         </resource>
         <results>
             <title>Results</title>
+            <hammer>Test of external lib bundled through require with hammer</hammer>
         </results>
     </test_output>
 </body>
