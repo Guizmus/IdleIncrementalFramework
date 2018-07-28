@@ -7033,7 +7033,7 @@ exports.config = {
 }
 
 },{}],11:[function(require,module,exports){
-exports.IIF_version = '0.0.1';
+exports.IIF_version = '0.0.2';
 
 exports.Game = require('./game.js');
 exports.dataStruct = {
