@@ -230,7 +230,6 @@ let _view = new WeakMap();
 let _values = new WeakMap();
 let _save = new WeakMap();
 let _time = new WeakMap();
-let _dependencies = new WeakMap();
 
 let reservedValues = ["time"];
 
@@ -255,7 +254,7 @@ class Game {
         if(typeof(config.viewClass) === "undefined")
             config.viewClass = view.viewClass;
         let view = new config.viewClass({
-            onInitialized : this.onViewInitialized,
+            onInitialized : this._onViewInitialized,
             gameObj : this,
         })
         _view.set(this,view);
@@ -270,34 +269,6 @@ class Game {
 
         if (!(typeof(config.ticks) === "undefined")) {
             _time.set(this,new Time(this,config.ticks));
-        }
-
-        if ((!(typeof(config.dependencies) === "undefined")) && (Object.keys(config.dependencies).length > 0)) {
-            // there are dependencies to load
-            let dependencies = {};
-
-            Object.keys(config.dependencies).forEach(function(key) {
-                dependencies[key] = false;
-                that.loadDependency(key,config.dependencies[key],function() {
-                    let dependencies = _dependencies.get(that);
-                    dependencies[key] = true;
-                    _dependencies.set(that,dependencies);
-                    if (typeof(this.onDependencyLoaded) === "function") {
-                        this.onDependencyLoaded.call(game,key);
-                    }
-                    if (typeof(this.onDependenciesLoaded) === "function") {
-                        let allDependancyLoaded = true;
-                        Object.keys(dependencies).forEach(function(key) {
-                            allDependancyLoaded = allDependancyLoaded && dependencies[key];
-                        })
-                        if (allDependancyLoaded)
-                            this.onDependenciesLoaded.call(game);
-                    }
-                });
-            })
-
-            _dependencies.set(this,dependencies);
-
         }
 
         _save.set(this,new Save(config.saveKey,this));
@@ -357,13 +328,15 @@ class Game {
         if (!(typeof(this.config.libName) === "undefined"))
             localization.parsePage(this.config.libName);
     }
-    onViewInitialized () {
+    _onViewInitialized () {
         if (debug)
             console.log("Game : View initialized",this)
         if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
             localization.parsePage(this.config.libName);
         this.redrawValues();
         this.localize();
+        if (typeof(this.onViewInitialized) === "function")
+            this.onViewInitialized();
     }
     getView () {
         return _view.get(this);
