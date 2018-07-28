@@ -36,7 +36,6 @@ class Game extends _IIF.Game {
                 //     // The behaviour Bonus (that Mana extends here) is built for a resource that is earned every tick, and has an increasing earning based on a list of bonuses (like buildings in common clickers)
                 //     // The behaviour TendsTo is built for a value that tends to something. For example, stamina going down towards 0 at a constant step of -1 per second, or -5% per second. different steps can be declared to trigger special functions then
                 // },
-            }
         });
     }
     onViewInitialized () {
