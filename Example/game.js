@@ -1,6 +1,8 @@
 let _IIF = require("../IIF/main");
 let _View = require("./view");
+
 let Hammer = require("./lib/hammer.min.js");
+let Mana = require("./mana")
 
 class Game extends _IIF.Game {
     constructor(args) {
@@ -26,6 +28,15 @@ class Game extends _IIF.Game {
                     // another class that you build, that presents the methods toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
                 },
             },
+
+                // mana : {
+                //     component : 'manaValueDisplay',
+                //     data : new _IIF.dataStruct.BigNumber(1,3),
+                //     behaviour : Mana, // linking a behaviour class will make the resource react to ticks. This needs the game to have set the ticks param to true. A Behaviour class must implement a tick function at least, you can extends one of the IIF.behaviour class to use some built in features.
+                //     // The behaviour Bonus (that Mana extends here) is built for a resource that is earned every tick, and has an increasing earning based on a list of bonuses (like buildings in common clickers)
+                //     // The behaviour TendsTo is built for a value that tends to something. For example, stamina going down towards 0 at a constant step of -1 per second, or -5% per second. different steps can be declared to trigger special functions then
+                // },
+            }
         });
     }
     onViewInitialized () {
