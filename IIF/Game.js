@@ -1,4 +1,5 @@
 let debug = true;
+
 let localization = require('./localization');
 let view = require('./view');
 let GameValue = require('./dataStruct/gamevalue');
@@ -16,7 +17,7 @@ class Game {
     constructor(config) {
 
         if (debug)
-            console.log("Game : new game",config)
+            console.log("Game : new Game()",config);
 
         this.config = config;
         let that = this;
@@ -33,7 +34,7 @@ class Game {
         if(typeof(config.viewClass) === "undefined")
             config.viewClass = view.viewClass;
         let view = new config.viewClass({
-            onInitialized : this.onViewInitialized,
+            onInitialized : this._onViewInitialized,
             gameObj : this,
         })
         _view.set(this,view);
@@ -51,6 +52,22 @@ class Game {
         }
 
         _save.set(this,new Save(config.saveKey,this));
+    }
+    loadDependency (key,path,callback) {
+        let that = this;
+        fetch(path)
+            .then(response => response.text())
+            .then(_data => {
+                if (debug)
+                    console.log("Game : Loaded dependency",path);
+                eval(_data);
+            })
+            .catch(function(error) {
+                console.warn("Game : Error while loading a dependency : ",error.message,path);
+            })
+            .then(()=>{
+                callback.call(that)
+            });
     }
     // values management
     redrawValue(key) {
@@ -91,13 +108,15 @@ class Game {
         if (!(typeof(this.config.libName) === "undefined"))
             localization.parsePage(this.config.libName);
     }
-    onViewInitialized () {
+    _onViewInitialized () {
         if (debug)
             console.log("Game : View initialized",this)
         if (!(typeof(this.config.libName) === "undefined"))  // if the game is localized, we parse the page now that the view is built. The page is already parsed after the lib is loaded but we prepared the texts before that
             localization.parsePage(this.config.libName);
         this.redrawValues();
         this.localize();
+        if (typeof(this.onViewInitialized) === "function")
+            this.onViewInitialized();
     }
     getView () {
         return _view.get(this);

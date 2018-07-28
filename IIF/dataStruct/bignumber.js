@@ -1,8 +1,9 @@
 let debug = true;
 
+let decimal = require('../lib/decimal.js');
+
 let _valueClass = new WeakMap();
 let _value = new WeakMap();
-let decimal = require('../lib/decimal.js');
 
 function getExponent (value) {
     let split = value.toExponential().split('e')
@@ -19,6 +20,10 @@ function getExponent (value) {
 
 class BigNumber {
     constructor (valueClass,precision) {
+
+        if (debug)
+            console.log("BigNumber : new BigNumber()",precision);
+
         this.precision = precision;
         this.display_mode = 'toShortSuffix';
         _valueClass.set(this,valueClass);

@@ -1,6 +1,9 @@
 let _IIF = require("../IIF/main");
 let _View = require("./view");
+
+let Hammer = require("./lib/hammer.min.js");
 let Mana = require("./mana")
+
 class Game extends _IIF.Game {
     constructor(args) {
         super({
@@ -24,6 +27,7 @@ class Game extends _IIF.Game {
                     // IIF.dataStruct.BreakInfinity for fast calculation, with big numbers
                     // another class that you build, that presents the methods toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
                 },
+            },
 
                 // mana : {
                 //     component : 'manaValueDisplay',
@@ -34,6 +38,9 @@ class Game extends _IIF.Game {
                 // },
             }
         });
+    }
+    onViewInitialized () {
+        this.hammerTest();
     }
     upgradeSave (saveData,fromVersion) {
         console.log("upgrading savedata from game",saveData,"from game version",fromVersion);
@@ -59,6 +66,13 @@ class Game extends _IIF.Game {
     resetGold () {
         this.getValue('gold').setValue(100);
         this.redrawValue('gold')
+    }
+    hammerTest() {
+        var element = document.getElementById('hammerDisplay');
+        var mc = new Hammer(element);
+        mc.on("panleft panright tap press", function(ev) {
+            element.textContent = ev.type +" gesture detected.";
+        });
     }
 }
 module.exports = Game;

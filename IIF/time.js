@@ -5,6 +5,10 @@ let _lastTotalTicks = new WeakMap();
 
 class Time {
     constructor (tickedObject,ticksPerSecond) {
+
+        if (debug)
+            console.log("Time : new Time()",tickedObject,ticksPerSecond);
+
         let that = this;
         this.tickedObject = tickedObject;
         this.ticksPerSecond = ticksPerSecond;
@@ -38,7 +42,7 @@ class Time {
     }
     handleWorkerMessage(e) {
         if (debug)
-            console.log("Time : recieving a message from the worker",e.data,this)
+            console.log("Time : recieving a message from the worker",e.data,this);
         let response = e.data;
         switch (response[0]) {
             case 'doTick' :
