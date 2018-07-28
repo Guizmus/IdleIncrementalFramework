@@ -51,3 +51,10 @@
 .monitor .label::after {
     content : ' : ';
 }
+#hammerDisplay {
+  background: silver;
+  height: 50px;
+  width : 200px;
+  text-align: center;
+  font: 20px Helvetica, Arial, sans-serif;
+}

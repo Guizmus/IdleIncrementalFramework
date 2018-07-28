@@ -25,7 +25,17 @@ class Game extends _IIF.Game {
                     // another class that you build, that presents the methods toStr() for drawing, toJSON() and fromJSON(json) for save and load behaviour
                 },
             },
+            dependencies : { // declaring dependencies will load them, and call game.onDependenciesLoaded when it is done.
+                hammer : 'Example/lib/hammer.min.js', // in this example, you can then access hammer.min.js though game.getDependency('hammer')
+            },
         });
+    }
+    onDependencyLoaded(key) { // if you define this function, it will be called upon each dependency that was asked in the constructor
+        console.log("Example Game : dependency loaded",key);
+    }
+    onDependenciesLoaded() { // if you define this function, it will be called once all dependencies are loaded
+        console.log("Example Game : all dependencies loaded");
+        this.hammerTest();
     }
     upgradeSave (saveData,fromVersion) {
         console.log("upgrading savedata from game",saveData,"from game version",fromVersion);
@@ -51,6 +61,13 @@ class Game extends _IIF.Game {
     resetGold () {
         this.getValue('gold').setValue(100);
         this.redrawValue('gold')
+    }
+    hammerTest() {
+        var element = document.getElementById('hammerDisplay');
+        var mc = new Hammer(element);
+        mc.on("panleft panright tap press", function(ev) {
+            element.textContent = ev.type +" gesture detected.";
+        });
     }
 }
 module.exports = Game;
