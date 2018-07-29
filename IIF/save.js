@@ -56,7 +56,8 @@ class Save {
         if (debug)
             console.log('Save : loading data from localstorage',this.data);
         this.gameObj.listValues().forEach(function(key) {
-            that.gameObj.getValue(key).fromJSON(that.data.values[key]);
+            if (!(typeof(that.data.values[key]) === "undefined"))
+                that.gameObj.getValue(key).fromJSON(that.data.values[key]);
         });
         if ((this.gameObj.config.ticks) && !(typeof(this.data.time) === "undefined")) {
             this.gameObj.getTicker().fromJSON(this.data.time);

@@ -10,6 +10,7 @@ let _view = new WeakMap();
 let _values = new WeakMap();
 let _save = new WeakMap();
 let _time = new WeakMap();
+let _behaviours = new WeakMap();
 
 let reservedValues = ["time"];
 
@@ -51,23 +52,22 @@ class Game {
             _time.set(this,new Time(this,config.ticks));
         }
 
+        if (!(typeof(config.behaviours) === "undefined")) {
+            let behaviours = {};
+            Object.keys(config.behaviours).forEach(function(key) {
+                behaviours[key] = new config.behaviours[key]();
+            })
+            _behaviours.set(this,behaviours);
+        } else
+            _behaviours.set(this,{});
+
         _save.set(this,new Save(config.saveKey,this));
     }
-    loadDependency (key,path,callback) {
-        let that = this;
-        fetch(path)
-            .then(response => response.text())
-            .then(_data => {
-                if (debug)
-                    console.log("Game : Loaded dependency",path);
-                eval(_data);
-            })
-            .catch(function(error) {
-                console.warn("Game : Error while loading a dependency : ",error.message,path);
-            })
-            .then(()=>{
-                callback.call(that)
-            });
+    behavior(key) {
+        return _behaviours.get(this)[key];
+    }
+    behaviors() {
+        return _behaviours.get(this);
     }
     // values management
     redrawValue(key) {

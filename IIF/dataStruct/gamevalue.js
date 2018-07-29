@@ -16,6 +16,9 @@ class GameValue extends SavedValue {
         } else
             this.behaviour = false;
     }
+    toNumber() {
+        return this.getValue().toNumber();
+    }
     toStr() {
         return this.getValueObject().toStr();
     }

@@ -3,8 +3,8 @@ let debug = true;
 let BaseBehaviour = require('./behaviour')
 
 class Bonus extends BaseBehaviour {
-    constructor(valueObject,config) {
-        super(valueObject);
+    constructor(gameObj,config) {
+        super(gameObj);
         this.config = config;
         // if (typeof(config.buildings))
     }
